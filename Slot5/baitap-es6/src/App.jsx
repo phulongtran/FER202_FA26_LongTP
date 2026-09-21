@@ -1,51 +1,49 @@
-import StudentCard from './components/StudentCard';
+import ProductCard from './components/ProductCard';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
-const student1 = {
-  id: 'SE1701',
-  name: 'Nguyễn Văn An',
-  major: 'Software Engineering',
-  gpa: 8.5,
-  avatar: 'https://i.pravatar.cc/200?img=12',
-  contact: {
-    email: 'an.nv@fpt.edu.vn',
-    phone: '0901 234 567',
+const productA = {
+  id: 1,
+  name: 'Tai nghe Bluetooth',
+  price: 590000,
+  image: 'https://picsum.photos/seed/headphone/300/200',
+  rating: {
+    rate: 4.5,
+    count: 120,
+  },
+  category: {
+    name: 'Âm thanh',
   },
 };
 
-const student2 = {
-  id: 'SE1702',
-  name: 'Trần Minh Anh',
-  major: 'Software Engineering',
-  gpa: 9.0,
-  avatar: 'https://i.pravatar.cc/200?img=5',
-  contact: {
-    email: 'anh.tm@fpt.edu.vn',
-    phone: '0902 345 678',
-  },
+const productB = {
+  id: 2,
+  name: 'Chuột không dây',
+  price: 0,
 };
 
-const student3 = {
-  id: 'SE1703',
-  name: 'Lê Hoàng Nam',
-  major: 'Software Engineering',
-  gpa: 7.8,
-  avatar: 'https://i.pravatar.cc/200?img=11',
-  contact: {
-    email: 'nam.lh@fpt.edu.vn',
-    phone: '0903 456 789',
-  },
+const productC = {
+  id: 3,
 };
 
 function App() {
   return (
     <div className="container my-4">
-      <h1 className="mb-4">Danh Sách Sinh Viên</h1>
+      <h1 className="mb-4">Danh Sách Sản Phẩm</h1>
 
-      <div className="d-flex gap-3 flex-wrap">
-        <StudentCard student={student1} />
-        <StudentCard student={student2} />
-        <StudentCard student={student3} />
-      </div>
+      <Row className="g-4">
+        <Col md={4}>
+          <ProductCard product={productA} />
+        </Col>
+
+        <Col md={4}>
+          <ProductCard product={productB} />
+        </Col>
+
+        <Col md={4}>
+          <ProductCard product={productC} />
+        </Col>
+      </Row>
     </div>
   );
 }
