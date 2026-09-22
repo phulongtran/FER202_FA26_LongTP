@@ -20,13 +20,16 @@ const age = currentYear - birthYear;
 
 const greeting = `Chào buổi ${session}, ${fullName}!`;
 
-const borderClass = age >= 21 ? 'border-success' : 'border-warning';
+const borderClass = age >= 18 ? 'border-success' : 'border-warning';
 
 function WelcomeCard() {
   return (
     <Card
       className={`shadow-sm ${borderClass}`}
-      style={{ maxWidth: 400 }}
+      style={{
+        maxWidth: '400px',
+        textAlign: 'center',
+      }}
     >
       <Card.Header>Thẻ sinh viên</Card.Header>
 

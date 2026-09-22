@@ -17,17 +17,32 @@ const StudentCard = ({ student }) => {
 
   return (
     <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src={avatar} />
+      <Card.Img
+        variant="top"
+        src={avatar}
+        alt={name}
+        style={{
+          width: '120px',
+          height: '120px',
+          objectFit: 'cover',
+          borderRadius: '50%',
+          margin: '20px auto 10px',
+        }}
+      />
 
-      <Card.Body>
+      <Card.Body className="text-center">
         <Card.Title>{name}</Card.Title>
 
         <Card.Subtitle className="mb-2 text-muted">
-          {id} - {major}
+          {id}
         </Card.Subtitle>
+
+        <Card.Text>
+          {major}
+        </Card.Text>
       </Card.Body>
 
-      <ListGroup variant="flush">
+      <ListGroup variant="flush" className="text-center">
         <ListGroup.Item>
           GPA: {gpa}
         </ListGroup.Item>
@@ -41,7 +56,7 @@ const StudentCard = ({ student }) => {
         </ListGroup.Item>
       </ListGroup>
 
-      <Card.Body>
+      <Card.Body className="text-center">
         <Button variant="primary">
           Xem hồ sơ
         </Button>
