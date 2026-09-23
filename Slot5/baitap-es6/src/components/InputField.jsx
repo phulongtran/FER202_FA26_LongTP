@@ -1,28 +1,21 @@
 import Form from 'react-bootstrap/Form';
 
-const InputField = ({
+function InputField({
   id,
   label,
+  type,
+  placeholder,
+  required,
   helpText,
-  ...inputProps
-}) => {
+}) {
   return (
-    <Form.Group
-      className="mb-3"
-      controlId={id}
-    >
-      <Form.Label>
-        {label}
-
-        {inputProps.required && (
-          <span className="text-danger">
-            {' '}*
-          </span>
-        )}
-      </Form.Label>
+    <Form.Group className="mb-3" controlId={id}>
+      <Form.Label>{label}</Form.Label>
 
       <Form.Control
-        {...inputProps}
+        type={type}
+        placeholder={placeholder}
+        required={required}
       />
 
       {helpText && (
@@ -32,6 +25,6 @@ const InputField = ({
       )}
     </Form.Group>
   );
-};
+}
 
 export default InputField;

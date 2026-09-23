@@ -1,16 +1,20 @@
 import Button from 'react-bootstrap/Button';
 
-const AppButton = ({
-  variant = 'primary',
+function AppButton({
   children,
-  ...rest
-}) => (
-  <Button
-    variant={variant}
-    {...rest}
-  >
-    {children}
-  </Button>
-);
+  type = 'button',
+  variant = 'primary',
+  className = '',
+}) {
+  return (
+    <Button
+      type={type}
+      variant={variant}
+      className={className}
+    >
+      {children}
+    </Button>
+  );
+}
 
 export default AppButton;

@@ -1,13 +1,15 @@
-import CartTable from './components/CartTable';
+import RegisterForm from './components/RegisterForm';
 
 function App() {
   return (
-    <div className="container my-4">
-      <h1 className="text-center mb-4">
-        Giỏ hàng
-      </h1>
+    <div className="min-vh-100 d-flex justify-content-center align-items-center">
+      <div className="w-100">
+        <h1 className="text-center mb-4">
+          Register Form
+        </h1>
 
-      <CartTable />
+        <RegisterForm />
+      </div>
     </div>
   );
 }
