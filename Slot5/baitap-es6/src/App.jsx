@@ -1,12 +1,17 @@
-import ProductList from './components/ProductList';
+import ProductCard from './components/ProductCard';
 import { products } from './data/products';
 
 function App() {
+  const product = products[0];
+
   return (
     <div className="container my-4">
-      <h1 className="mb-4">Danh Sách Sản Phẩm</h1>
-
-      <ProductList products={products} />
+      <ProductCard
+        product={{
+          ...product,
+          discount: 30,
+        }}
+      />
     </div>
   );
 }
