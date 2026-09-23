@@ -1,16 +1,13 @@
-import RegisterForm from './components/RegisterForm';
+import {
+  Layout,
+  WelcomeCard,
+} from './components';
 
 function App() {
   return (
-    <div className="min-vh-100 d-flex justify-content-center align-items-center">
-      <div className="w-100">
-        <h1 className="text-center mb-4">
-          Register Form
-        </h1>
-
-        <RegisterForm />
-      </div>
-    </div>
+    <Layout title="Trang chủ">
+      <WelcomeCard />
+    </Layout>
   );
 }
 
