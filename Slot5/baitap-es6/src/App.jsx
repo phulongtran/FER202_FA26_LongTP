@@ -1,17 +1,13 @@
-import ProductCard from './components/ProductCard';
-import { products } from './data/products';
+import CartTable from './components/CartTable';
 
 function App() {
-  const product = products[0];
-
   return (
     <div className="container my-4">
-      <ProductCard
-        product={{
-          ...product,
-          discount: 30,
-        }}
-      />
+      <h1 className="text-center mb-4">
+        Giỏ hàng
+      </h1>
+
+      <CartTable />
     </div>
   );
 }
