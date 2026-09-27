@@ -1,5 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import './Banner.css'
 
 function Banner() {
@@ -9,7 +7,6 @@ function Banner() {
       className="carousel slide"
       data-bs-ride="carousel"
     >
-      {/* Indicators */}
       <div className="carousel-indicators">
         <button
           type="button"
@@ -49,7 +46,6 @@ function Banner() {
         ></button>
       </div>
 
-      {/* Banner images */}
       <div className="carousel-inner">
         <div className="carousel-item active">
           <img
@@ -92,38 +88,22 @@ function Banner() {
         </div>
       </div>
 
-      {/* Previous button */}
       <button
         className="carousel-control-prev"
         type="button"
         data-bs-target="#pizzaBanner"
         data-bs-slide="prev"
       >
-        <span
-          className="carousel-control-prev-icon"
-          aria-hidden="true"
-        ></span>
-
-        <span className="visually-hidden">
-          Previous
-        </span>
+        <span className="carousel-control-prev-icon"></span>
       </button>
 
-      {/* Next button */}
       <button
         className="carousel-control-next"
         type="button"
         data-bs-target="#pizzaBanner"
         data-bs-slide="next"
       >
-        <span
-          className="carousel-control-next-icon"
-          aria-hidden="true"
-        ></span>
-
-        <span className="visually-hidden">
-          Next
-        </span>
+        <span className="carousel-control-next-icon"></span>
       </button>
     </div>
   )
