@@ -3,11 +3,15 @@
   padding: 10px 0 60px;
 }
 
+.book-table-section .container {
+  max-width: 750px;
+}
+
 .book-table-title {
   color: #fff;
   text-align: center;
   font-size: 28px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .book-table-section .form-control,
@@ -15,10 +19,14 @@
   border-radius: 3px;
   font-size: 13px;
   border: none;
+  height: 25px;
+  padding: 4px 8px;
 }
 
-.book-table-section textarea {
+.book-table-section textarea.form-control {
+  height: 105px;
   resize: none;
+  padding: 8px;
 }
 
 .send-button {
@@ -26,8 +34,9 @@
   color: #fff;
   font-weight: bold;
   border-radius: 3px;
-  padding: 8px 25px;
+  padding: 6px 20px;
   border: none;
+  font-size: 13px;
 }
 
 .send-button:hover {
