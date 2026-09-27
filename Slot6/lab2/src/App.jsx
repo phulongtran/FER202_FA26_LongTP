@@ -4,6 +4,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import Header from './components/Header'
 import Banner from './components/Banner'
 import ProductList from './components/ProductList'
+import BookTable from './components/BookTable'
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Header />
       <Banner />
       <ProductList />
+      <BookTable />
     </div>
   )
 }

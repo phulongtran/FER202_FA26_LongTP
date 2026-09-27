@@ -1,0 +1,36 @@
+.book-table-section {
+  background-color: #333;
+  padding: 10px 0 60px;
+}
+
+.book-table-title {
+  color: #fff;
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.book-table-section .form-control,
+.book-table-section .form-select {
+  border-radius: 3px;
+  font-size: 13px;
+  border: none;
+}
+
+.book-table-section textarea {
+  resize: none;
+}
+
+.send-button {
+  background-color: #ffc107;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 3px;
+  padding: 8px 25px;
+  border: none;
+}
+
+.send-button:hover {
+  background-color: #e0a800;
+  color: #fff;
+}
