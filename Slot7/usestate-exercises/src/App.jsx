@@ -1,5 +1,6 @@
 import Exercise1Counter from './components/Exercise1Counter'
 import Exercise2ControlledInput from './components/Exercise2ControlledInput'
+import Exercise3ToggleVisibility from './components/Exercise3ToggleVisibility'
 
 function App() {
   return (
@@ -11,6 +12,8 @@ function App() {
       <Exercise1Counter />
 
       <Exercise2ControlledInput />
+
+      <Exercise3ToggleVisibility />
     </div>
   )
 }
