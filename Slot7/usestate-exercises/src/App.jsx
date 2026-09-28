@@ -1,4 +1,5 @@
 import Exercise1Counter from './components/Exercise1Counter'
+import Exercise2ControlledInput from './components/Exercise2ControlledInput'
 
 function App() {
   return (
@@ -8,6 +9,8 @@ function App() {
       </h1>
 
       <Exercise1Counter />
+
+      <Exercise2ControlledInput />
     </div>
   )
 }
