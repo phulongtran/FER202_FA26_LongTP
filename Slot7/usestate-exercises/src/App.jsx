@@ -3,6 +3,7 @@ import Exercise2ControlledInput from './components/Exercise2ControlledInput'
 import Exercise3ToggleVisibility from './components/Exercise3ToggleVisibility'
 import Exercise4TodoList from './components/Exercise4TodoList'
 import Exercise5ColorSwitcher from './components/Exercise5ColorSwitcher'
+import Exercise6SearchFilter from './components/Exercise6SearchFilter'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Exercise3ToggleVisibility />
       <Exercise4TodoList />
       <Exercise5ColorSwitcher />
+      <Exercise6SearchFilter />
     </div>
   )
 }
