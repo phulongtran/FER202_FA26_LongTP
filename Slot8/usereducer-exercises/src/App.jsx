@@ -1,7 +1,13 @@
 import StepCounter from "./usereducer/StepCounter";
-import "bootstrap/dist/css/bootstrap.min.css";
+import OrderTracker from "./usereducer/OrderTracker";
+
 function App() {
-  return <StepCounter />;
+  return (
+    <>
+      <StepCounter />
+      <OrderTracker />
+    </>
+  );
 }
 
 export default App;
