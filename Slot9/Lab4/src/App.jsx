@@ -8,6 +8,7 @@ import RegisterForm from './components/RegisterForm';
 import ValidatedRegisterForm from './components/ValidatedRegisterForm';
 import TodoList from './components/TodoList';
 import CartDemoPage from './pages/CartDemoPage';
+import LoginForm from './components/LoginForm';
 function App() {
   return (
     <div className="container py-4">
@@ -61,6 +62,15 @@ function App() {
 
   <CartDemoPage />
 </div>
+<section className="mb-5">
+  <h2 className="mb-4">Bài 8: Form đăng nhập với useReducer</h2>
+
+  <LoginForm
+    onLoginSuccess={(user) => {
+      console.log('Login success:', user.email);
+    }}
+  />
+</section>
     </div>
   );
 }
