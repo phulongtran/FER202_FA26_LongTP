@@ -2,7 +2,7 @@ import { Container } from 'react-bootstrap';
 import Header from './Header';
 import { useTheme } from '../context/ThemeContext';
 
-function Layout({ children }) {
+function Layout({ children, currentPage, onNavigate }) {
   const { theme } = useTheme();
 
   return (
@@ -10,7 +10,10 @@ function Layout({ children }) {
       data-bs-theme={theme}
       className="bg-body text-body min-vh-100"
     >
-      <Header />
+      <Header
+        currentPage={currentPage}
+        onNavigate={onNavigate}
+      />
 
       <Container className="py-4">
         {children}
