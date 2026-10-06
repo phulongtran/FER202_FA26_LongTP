@@ -104,25 +104,25 @@ function ProductFilter({ products, onAddToCart }) {
           className="mb-3"
         />
 
-        <div className="mb-3">
-          <Form.Label>Danh mục</Form.Label>
+       <div className="mb-3 text-center">
+  <Form.Label className="d-block mb-2">
+    Danh mục
+  </Form.Label>
 
-          <div className="d-flex flex-wrap gap-2">
-            {categories.map((name) => (
-              <Button
-                key={name}
-                variant={
-                  category === name
-                    ? 'primary'
-                    : 'outline-primary'
-                }
-                onClick={() => setCategory(name)}
-              >
-                {name}
-              </Button>
-            ))}
-          </div>
-        </div>
+  <div className="d-flex justify-content-center flex-wrap gap-2">
+    {categories.map((name) => (
+      <Button
+        key={name}
+        variant={
+          category === name ? 'primary' : 'outline-primary'
+        }
+        onClick={() => setCategory(name)}
+      >
+        {name}
+      </Button>
+    ))}
+  </div>
+</div>
 
         <Button
           variant="outline-secondary"
