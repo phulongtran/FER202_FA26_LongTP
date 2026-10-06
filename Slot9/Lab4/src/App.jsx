@@ -1,5 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import QuantityPicker from './components/QuantityPicker';
+import MiniCart from './components/MiniCart';
+import ProfilePreview from './components/ProfilePreview';
 
 function App() {
   return (
@@ -9,6 +11,12 @@ function App() {
       <QuantityPicker />
 
       <QuantityPicker min={2} max={5} />
+
+      <MiniCart />
+
+      <hr className="my-5" />
+
+      <ProfilePreview />
     </div>
   );
 }
