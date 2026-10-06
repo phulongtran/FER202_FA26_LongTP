@@ -5,6 +5,7 @@ import ProfilePreview from './components/ProfilePreview';
 import ProductFilter from './components/ProductFilter';
 import { products } from './data/products';
 import RegisterForm from './components/RegisterForm';
+import ValidatedRegisterForm from './components/ValidatedRegisterForm';
 function App() {
   return (
     <div className="container py-4">
@@ -33,6 +34,15 @@ function App() {
   </h2>
 
   <RegisterForm />
+</div>
+<hr className="my-5" />
+
+<div className="mb-5">
+  <h2 className="text-center mb-4">
+    Bài 5 - Validated Register Form
+  </h2>
+
+  <ValidatedRegisterForm />
 </div>
     </div>
   );
