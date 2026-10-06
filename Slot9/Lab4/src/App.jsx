@@ -2,6 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import QuantityPicker from './components/QuantityPicker';
 import MiniCart from './components/MiniCart';
 import ProfilePreview from './components/ProfilePreview';
+import ProductFilter from './components/ProductFilter';
+import { products } from './data/products';
 
 function App() {
   return (
@@ -17,6 +19,12 @@ function App() {
       <hr className="my-5" />
 
       <ProfilePreview />
+
+      <hr className="my-5" />
+
+      <h1 className="mb-4">Bài 3 - Product Filter</h1>
+
+      <ProductFilter products={products} />
     </div>
   );
 }
