@@ -6,6 +6,7 @@ import ProductFilter from './components/ProductFilter';
 import { products } from './data/products';
 import RegisterForm from './components/RegisterForm';
 import ValidatedRegisterForm from './components/ValidatedRegisterForm';
+import TodoList from './components/TodoList';
 function App() {
   return (
     <div className="container py-4">
@@ -44,6 +45,12 @@ function App() {
 
   <ValidatedRegisterForm />
 </div>
+<div className="mb-5">
+        <h2 className="text-center mb-4">
+          Bài 6 - Todo List
+        </h2>
+        <TodoList />
+      </div>
     </div>
   );
 }

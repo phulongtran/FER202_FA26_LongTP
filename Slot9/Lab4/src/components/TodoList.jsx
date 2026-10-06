@@ -20,6 +20,7 @@ function TodoList() {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
 
+  // Validate nội dung Todo
   const validateTitle = (text, ignoreId = null) => {
     const trimmedText = text.trim();
 
@@ -44,6 +45,7 @@ function TodoList() {
     return '';
   };
 
+  // Thêm Todo
   const handleAdd = (e) => {
     e.preventDefault();
 
@@ -67,6 +69,7 @@ function TodoList() {
     setError('');
   };
 
+  // Hoàn thành / chưa hoàn thành
   const toggleTodo = (id) => {
     setTodos((prev) =>
       prev.map((todo) =>
@@ -80,16 +83,19 @@ function TodoList() {
     );
   };
 
+  // Xóa Todo
   const deleteTodo = (id) => {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
 
+  // Bắt đầu sửa
   const startEdit = (todo) => {
     setEditingId(todo.id);
     setEditText(todo.title);
     setError('');
   };
 
+  // Lưu Todo sau khi sửa
   const saveEdit = () => {
     if (editingId === null) {
       return;
@@ -118,12 +124,14 @@ function TodoList() {
     setError('');
   };
 
+  // Hủy sửa
   const cancelEdit = () => {
     setEditingId(null);
     setEditText('');
     setError('');
   };
 
+  // Xử lý Enter / Escape khi sửa
   const handleEditKeyDown = (e) => {
     if (e.key === 'Enter') {
       saveEdit();
@@ -134,6 +142,7 @@ function TodoList() {
     }
   };
 
+  // Todo hiển thị theo filter
   const visibleTodos = todos.filter((todo) => {
     if (filter === 'active') {
       return !todo.done;
@@ -146,8 +155,10 @@ function TodoList() {
     return true;
   });
 
+  // Số Todo chưa hoàn thành
   const remaining = todos.filter((todo) => !todo.done).length;
 
+  // Xóa tất cả Todo đã hoàn thành
   const clearCompleted = () => {
     setTodos((prev) => prev.filter((todo) => !todo.done));
   };
@@ -155,10 +166,13 @@ function TodoList() {
   return (
     <Card className="shadow-sm">
       <Card.Body className="p-4">
-        <Card.Title className="mb-4">Todo List</Card.Title>
+        <Card.Title className="mb-4 text-center">
+          Todo List
+        </Card.Title>
 
+        {/* Form thêm Todo */}
         <Form noValidate onSubmit={handleAdd}>
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-3">
             <div className="d-flex gap-2">
               <Form.Control
                 type="text"
@@ -171,7 +185,9 @@ function TodoList() {
                 isInvalid={Boolean(error)}
               />
 
-              <Button type="submit">Thêm</Button>
+              <Button type="submit">
+                Thêm
+              </Button>
             </div>
 
             {error && (
@@ -182,11 +198,16 @@ function TodoList() {
           </Form.Group>
         </Form>
 
+        {/* Bộ lọc */}
         <div className="d-flex flex-wrap gap-2 mb-3">
           {Object.entries(FILTERS).map(([key, label]) => (
             <Button
               key={key}
-              variant={filter === key ? 'primary' : 'outline-primary'}
+              variant={
+                filter === key
+                  ? 'primary'
+                  : 'outline-primary'
+              }
               onClick={() => setFilter(key)}
             >
               {label}
@@ -194,9 +215,12 @@ function TodoList() {
           ))}
         </div>
 
+        {/* Danh sách Todo */}
         <div className="mb-3">
           {visibleTodos.length === 0 ? (
-            <div className="text-muted">Không có công việc</div>
+            <div className="text-muted text-center py-3">
+              Không có công việc
+            </div>
           ) : (
             visibleTodos.map((todo) => (
               <div
@@ -227,7 +251,9 @@ function TodoList() {
                     <span
                       onDoubleClick={() => startEdit(todo)}
                       style={{
-                        textDecoration: todo.done ? 'line-through' : 'none',
+                        textDecoration: todo.done
+                          ? 'line-through'
+                          : 'none',
                         cursor: 'pointer',
                       }}
                     >
@@ -239,6 +265,7 @@ function TodoList() {
                 <Button
                   variant="outline-danger"
                   size="sm"
+                  className="ms-2"
                   onClick={() => deleteTodo(todo.id)}
                 >
                   Xóa
@@ -248,6 +275,7 @@ function TodoList() {
           )}
         </div>
 
+        {/* Footer */}
         <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
           <span className="text-muted">
             Còn {remaining} việc chưa xong
