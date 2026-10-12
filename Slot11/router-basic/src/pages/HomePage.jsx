@@ -13,11 +13,10 @@ function HomePage() {
           <span className="highlight-text"> Trần Phú Long</span>
         </h1>
 
-        <h2>Sinh viên Công nghệ thông tin</h2>
+        <h2></h2>
 
         <p className="intro-text">
-          Mình yêu thích lập trình web, xây dựng giao diện hiện đại
-          và phát triển những sản phẩm hữu ích cho người dùng.
+         
         </p>
 
         <Button
