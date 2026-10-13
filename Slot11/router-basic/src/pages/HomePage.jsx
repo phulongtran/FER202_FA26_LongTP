@@ -6,7 +6,7 @@ function HomePage() {
   return (
     <div className="home-page">
       <section className="home-hero">
-        <p className="hero-label"></p>
+        <p className="hero-label"> </p>
         <h1>Chào mừng đến với Thư viện FPT</h1>
         <p>
           Không gian học tập và khám phá tri thức dành cho sinh viên.
