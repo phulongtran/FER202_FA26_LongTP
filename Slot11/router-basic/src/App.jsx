@@ -3,11 +3,13 @@ import { Navigate, Routes, Route } from "react-router-dom";
 
 import CourseListPage from "./pages/CourseListPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
-
+import { AppNavbar } from "./components/AppNavbar";
 import "./App.css";
 
 function App() {
   return (
+    <>
+    <AppNavbar />
     <Routes>
       <Route
         path="/"
@@ -29,6 +31,8 @@ function App() {
         element={<Navigate to="/courses" replace />}
       />
     </Routes>
+
+</>
   );
 }
 
