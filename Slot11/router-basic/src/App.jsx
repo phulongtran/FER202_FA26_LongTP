@@ -1,14 +1,9 @@
-
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
-import HelpLayout from "./layouts/HelpLayout";
-
-import HomePage from "./pages/HomePage";
-import BooksPage from "./pages/BooksPage";
-import FAQPage from "./pages/FAQPage";
-import RulesPage from "./pages/RulesPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import EventPage from "./pages/EventPage";
+import RegisterPage from "./pages/RegisterPage";
+import SuccessPage from "./pages/SuccessPage";
 
 import "./App.css";
 
@@ -16,17 +11,12 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<HomePage />} />
+        <Route index element={<EventPage />} />
+        <Route path="register" element={<RegisterPage />} />
+        <Route path="success" element={<SuccessPage />} />
 
-        <Route path="books" element={<BooksPage />} />
-
-        <Route path="help" element={<HelpLayout />}>
-          <Route index element={<Navigate to="faq" replace />} />
-          <Route path="faq" element={<FAQPage />} />
-          <Route path="rules" element={<RulesPage />} />
-        </Route>
-
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="help/*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   );
