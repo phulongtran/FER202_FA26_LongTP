@@ -1,30 +1,36 @@
-import { Container, Navbar, Nav } from "react-bootstrap";
+
+import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
+
+const MENU = [
+  { to: "/", label: "Trang chủ", end: true },
+  { to: "/books", label: "Sách", end: true },
+  { to: "/help", label: "Hướng dẫn", end: false },
+];
 
 function MainLayout() {
   return (
     <div className="app-layout">
-      <Navbar bg="white" expand="lg" className="main-navbar shadow-sm">
+      <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand as={NavLink} to="/" className="brand-name">
-            FPT University Library
+          <Navbar.Brand as={NavLink} to="/">
+            Trần Phú Long
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="main-navbar-nav" />
 
           <Navbar.Collapse id="main-navbar-nav">
             <Nav className="ms-auto">
-              <Nav.Link as={NavLink} to="/" end>
-                Trang chủ
-              </Nav.Link>
-
-              <Nav.Link as={NavLink} to="/books" end>
-                Sách
-              </Nav.Link>
-
-              <Nav.Link as={NavLink} to="/help">
-                Hướng dẫn
-              </Nav.Link>
+              {MENU.map((item) => (
+                <Nav.Link
+                  key={item.to}
+                  as={NavLink}
+                  to={item.to}
+                  end={item.end}
+                >
+                  {item.label}
+                </Nav.Link>
+              ))}
             </Nav>
           </Navbar.Collapse>
         </Container>

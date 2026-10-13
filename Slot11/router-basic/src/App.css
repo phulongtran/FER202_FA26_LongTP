@@ -9,21 +9,24 @@ main {
   flex: 1;
 }
 
+/* Navbar nền đen */
 .portfolio-navbar {
-  background-color: #ffffff;
-  border-bottom: 1px solid #e8edf3;
-  box-shadow: 0 4px 18px rgba(15, 39, 70, 0.04);
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
 }
 
+/* Tên website màu trắng */
 .brand-name {
-  color: #154b8b !important;
+  color: #ffffff !important;
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.5px;
 }
 
+/* Các menu trên Navbar */
 .portfolio-navbar .nav-link {
-  color: #526174;
+  color: #ffffff !important;
   font-weight: 500;
   margin-left: 12px;
   padding: 10px 14px !important;
@@ -31,17 +34,29 @@ main {
   transition: color 0.2s, background-color 0.2s;
 }
 
+/* Khi di chuột vào menu */
 .portfolio-navbar .nav-link:hover {
-  color: #154b8b;
-  background-color: #f0f6ff;
+  color: #ffffff !important;
+  background-color: #333333;
 }
 
+/* Menu đang được chọn */
 .portfolio-navbar .nav-link.active {
-  color: #154b8b !important;
-  background-color: #eaf2ff;
+  color: #ffffff !important;
+  background-color: #333333;
   font-weight: 700;
 }
 
+/* Nút mở menu trên điện thoại */
+.portfolio-navbar .navbar-toggler {
+  border-color: #ffffff;
+}
+
+.portfolio-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* Trang chủ */
 .home-section {
   min-height: 560px;
   display: flex;
@@ -113,6 +128,7 @@ main {
   transform: translateY(-2px);
 }
 
+/* Các trang nội dung */
 .page-container {
   padding-top: 64px;
   padding-bottom: 80px;
@@ -132,6 +148,7 @@ main {
   margin-bottom: 32px;
 }
 
+/* Danh sách kỹ năng */
 .skills-list {
   max-width: 760px;
   border-radius: 12px;
@@ -154,6 +171,7 @@ main {
   font-weight: 800;
 }
 
+/* Thẻ dự án */
 .project-card {
   border: 1px solid #e8edf3;
   border-radius: 14px;
@@ -204,6 +222,7 @@ main {
   font-weight: 500;
 }
 
+/* Thẻ liên hệ */
 .contact-card {
   max-width: 650px;
   border: 1px solid #e8edf3;
@@ -226,6 +245,7 @@ main {
   overflow-wrap: anywhere;
 }
 
+/* Trang 404 */
 .not-found-page {
   padding-top: 100px;
   padding-bottom: 100px;
@@ -249,6 +269,7 @@ main {
   margin-top: 16px;
 }
 
+/* Footer */
 .portfolio-footer {
   padding: 22px 16px;
   text-align: center;
@@ -262,6 +283,7 @@ main {
   font-size: 0.9rem;
 }
 
+/* Responsive tablet */
 @media (max-width: 991px) {
   .portfolio-navbar .nav-link {
     margin: 4px 0;
@@ -278,6 +300,7 @@ main {
   }
 }
 
+/* Responsive điện thoại */
 @media (max-width: 576px) {
   .home-content {
     padding-top: 60px;
@@ -291,4 +314,71 @@ main {
   .project-card .card-body {
     padding: 22px;
   }
+  
+/* Ép Navbar chuyển sang nền đen */
+nav.navbar.portfolio-navbar,
+.portfolio-navbar {
+  background: #000000 !important;
+  background-color: #000000 !important;
+}
+
+/* Chữ và tên website màu trắng */
+.portfolio-navbar .navbar-brand,
+.portfolio-navbar .nav-link {
+  color: #ffffff !important;
+}
+
+/* Menu khi rê chuột hoặc đang được chọn */
+.portfolio-navbar .nav-link:hover,
+.portfolio-navbar .nav-link.active {
+  color: #ffffff !important;
+  background-color: #333333 !important;
+}
+
+/* Nút menu trên điện thoại */
+.portfolio-navbar .navbar-toggler {
+  border-color: #ffffff !important;
+}
+
+.portfolio-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+/* Navbar nền đen */
+.main-navbar {
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Tên website màu trắng */
+.main-navbar .navbar-brand {
+  color: #ffffff !important;
+  font-weight: 800;
+}
+
+/* Các mục menu màu trắng */
+.main-navbar .nav-link {
+  color: #ffffff !important;
+  margin-left: 8px;
+  padding: 10px 14px !important;
+  border-radius: 8px;
+}
+
+/* Hover và menu đang được chọn */
+.main-navbar .nav-link:hover,
+.main-navbar .nav-link.active {
+  color: #ffffff !important;
+  background-color: #333333 !important;
+}
+
+/* Nút mở menu trên điện thoại */
+.main-navbar .navbar-toggler {
+  border-color: #ffffff !important;
+}
+
+.main-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}
+
 }
