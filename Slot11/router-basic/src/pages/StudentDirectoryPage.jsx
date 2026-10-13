@@ -1,7 +1,7 @@
 
 import { useSearchParams } from "react-router-dom";
 import STUDENTS from "../data/students";
-
+import "./StudentDirectoryPage.css";
 const CLASSES = ["SE20B01", "SE20B02", "SE20B04"];
 
 function StudentDirectoryPage() {
