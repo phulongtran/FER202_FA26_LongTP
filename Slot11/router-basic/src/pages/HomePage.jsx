@@ -1,33 +1,53 @@
 
+import { Button, Card, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Button, Container } from "react-bootstrap";
 
 function HomePage() {
   return (
-    <section className="home-section">
-      <Container className="home-content">
-        <p className="section-label">WELCOME TO MY PORTFOLIO</p>
-
-        <h1>
-          Xin chào, mình là
-          <span className="highlight-text"> Trần Phú Long</span>
-        </h1>
-
-        <h2></h2>
-
-        <p className="intro-text">
-         
+    <div className="home-page">
+      <section className="home-hero">
+        <p className="hero-label">FPT UNIVERSITY</p>
+        <h1>Chào mừng đến với Thư viện FPT</h1>
+        <p>
+          Không gian học tập và khám phá tri thức dành cho sinh viên.
+          Tìm kiếm sách, đọc hướng dẫn và sử dụng thư viện hiệu quả.
         </p>
 
-        <Button
-          as={Link}
-          to="/projects"
-          className="primary-button"
-        >
-          Xem dự án của mình
+        <Button as={Link} to="/books" variant="light" className="hero-button">
+          Khám phá sách
         </Button>
-      </Container>
-    </section>
+      </section>
+
+      <Row className="g-4 home-features">
+        <Col md={6}>
+          <Card className="feature-card h-100">
+            <Card.Body>
+              <h2>Danh sách sách</h2>
+              <p>
+                Xem danh sách sách, tác giả, thể loại và tình trạng mượn.
+              </p>
+              <Button as={Link} to="/books" variant="outline-primary">
+                Xem sách
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col md={6}>
+          <Card className="feature-card h-100">
+            <Card.Body>
+              <h2>Hướng dẫn sử dụng</h2>
+              <p>
+                Tìm hiểu câu hỏi thường gặp và nội quy của thư viện.
+              </p>
+              <Button as={Link} to="/help" variant="outline-primary">
+                Xem hướng dẫn
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </div>
   );
 }
 
