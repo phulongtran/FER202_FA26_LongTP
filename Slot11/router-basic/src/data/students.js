@@ -1,4 +1,4 @@
-```javascript
+
 const STUDENTS = [
   {
     id: "DE180001",
@@ -39,4 +39,3 @@ const STUDENTS = [
 ];
 
 export default STUDENTS;
-```
