@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 
 import AppNavbar from './components/Navbar';
+import Footer from './components/Footer';
+
 import Home from './pages/Home';
 import About from './pages/About';
 import New from './pages/New';
@@ -12,7 +14,7 @@ function App() {
     <BrowserRouter>
       <AppNavbar />
 
-      <Container className="mt-4">
+      <Container className="mt-4 text-end">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -20,6 +22,8 @@ function App() {
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </Container>
+
+      <Footer />
     </BrowserRouter>
   );
 }
