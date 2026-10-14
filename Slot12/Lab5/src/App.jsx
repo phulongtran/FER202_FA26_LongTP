@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 
 import AppNavbar from './components/Navbar';
+import MyCarousel from './components/MyCarousel';
 import Footer from './components/Footer';
 
 import Home from './pages/Home';
@@ -13,6 +14,8 @@ function App() {
   return (
     <BrowserRouter>
       <AppNavbar />
+
+      <MyCarousel />
 
       <Container className="mt-4 text-end">
         <Routes>
