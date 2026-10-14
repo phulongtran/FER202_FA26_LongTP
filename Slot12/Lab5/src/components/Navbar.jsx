@@ -30,6 +30,9 @@ function AppNavbar() {
             <Nav.Link as={NavLink} to="/contact">
               Contact
             </Nav.Link>
+            <Nav.Link as={NavLink} to="/products">
+  Products
+</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
