@@ -3,7 +3,7 @@ import PostList from './components/PostList';
 import CreatePost from './components/CreatePost';
 import UpdatePost from './components/UpdatePost';
 import PatchPost from './components/PatchPost';
-
+import DeletePost from './components/DeletePost';
 function App() {
   return (
     <div className="container py-4">
@@ -22,9 +22,12 @@ function App() {
       <div className="mb-4">
         <CreatePost />
       </div>
+      <h1 className="text-center my-4">DemoAxios</h1>
 
+      <DeletePost />
       <PostList />
     </div>
+    
   );
 }
 
