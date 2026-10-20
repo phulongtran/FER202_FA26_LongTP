@@ -2,6 +2,7 @@
 import PostList from './components/PostList';
 import CreatePost from './components/CreatePost';
 import UpdatePost from './components/UpdatePost';
+import PatchPost from './components/PatchPost';
 
 function App() {
   return (
@@ -9,6 +10,10 @@ function App() {
       <h1 className="text-center text-success mb-4">
         DemoAxios
       </h1>
+
+      <div className="mb-4">
+        <PatchPost />
+      </div>
 
       <div className="mb-4">
         <UpdatePost />
