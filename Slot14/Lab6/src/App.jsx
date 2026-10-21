@@ -6,7 +6,7 @@ import UpdatePost from './UpdatePost';
 import PatchPost from './PatchPost';
 import DeletePost from './DeletePost';
 import RequestConfig from './RequestConfig';
-
+import PostDetail from './PostDetail';
 function App() {
   return (
     <div>
