@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import postApi from './api/postApi';
 
 const AxiosDemo = () => {
   const [data, setData] = useState(null);
@@ -10,13 +10,10 @@ const AxiosDemo = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(
-          'https://jsonplaceholder.typicode.com/posts/1'
-        );
-
-        setData(response.data);
+        const res = await postApi.getById(1);
+        setData(res.data);
       } catch (err) {
-        setError(err.message);
+        setError(err.userMessage || err.message);
       } finally {
         setLoading(false);
       }
@@ -25,8 +22,8 @@ const AxiosDemo = () => {
     fetchPost();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="container my-3">
