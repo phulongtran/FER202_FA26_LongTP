@@ -1,8 +1,9 @@
 
-import { Card, ListGroup } from "react-bootstrap";
-import useAxios from "../../hooks/useAxios";
-import AsyncContent from "../common/AsyncContent";
-import postApi from "../../api/postApi";
+import { Card, ListGroup } from 'react-bootstrap';
+
+import useAxios from '../../hooks/useAxios';
+import AsyncContent from '../common/AsyncContent';
+import postApi from '../../api/postApi';
 
 export default function PostListCard() {
   const { data, loading, error, refetch } = useAxios(
@@ -14,7 +15,7 @@ export default function PostListCard() {
   return (
     <Card className="h-100 shadow-sm">
       <Card.Header>
-        <strong>2.1 · GET</strong> /posts?userId=1&amp;_limit=5
+        <strong>2.1 · GET</strong> /posts?userId=1&_limit=5
       </Card.Header>
 
       <Card.Body>
