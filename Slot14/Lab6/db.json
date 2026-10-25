@@ -1,12 +1,64 @@
+
 {
   "posts": [
-    { "id": "1", "title": "Học JSON Server", "views": 100 },
-    { "id": "2", "title": "Lập trình ReactJS", "views": 250 }
+    { "id": 1, "userId": 1, "title": "Getting Started with React", "body": "React helps developers build interactive user interfaces using reusable components." },
+    { "id": 2, "userId": 1, "title": "Understanding React Hooks", "body": "React Hooks allow function components to manage state and side effects." },
+    { "id": 3, "userId": 2, "title": "Introduction to JavaScript", "body": "JavaScript is a programming language used to create dynamic web applications." },
+    { "id": 4, "userId": 3, "title": "Learning HTML Basics", "body": "HTML provides the structure and content of a web page." },
+    { "id": 5, "userId": 2, "title": "CSS Layout Fundamentals", "body": "CSS is used to style web pages and create responsive layouts." },
+    { "id": 6, "userId": 1, "title": "Working with Axios", "body": "Axios is a promise-based HTTP client for making API requests." },
+    { "id": 7, "userId": 3, "title": "REST API Explained", "body": "REST APIs use HTTP methods to retrieve, create, update, and delete resources." },
+    { "id": 8, "userId": 2, "title": "Introduction to Node.js", "body": "Node.js allows JavaScript to run outside the browser." },
+    { "id": 9, "userId": 1, "title": "Using React Router", "body": "React Router helps manage navigation between pages in React applications." },
+    { "id": 10, "userId": 3, "title": "Understanding JSON", "body": "JSON is a lightweight format for storing and exchanging structured data." },
+    { "id": 11, "userId": 2, "title": "Git Basics for Developers", "body": "Git helps developers track changes and collaborate on software projects." },
+    { "id": 12, "userId": 1, "title": "Reusable React Components", "body": "Reusable components make applications easier to maintain and extend." },
+    { "id": 13, "userId": 3, "title": "Form Validation in React", "body": "Form validation helps ensure that users submit valid and complete information." },
+    { "id": 14, "userId": 2, "title": "Understanding HTTP Methods", "body": "GET retrieves data, POST creates data, PUT replaces data, PATCH updates fields, and DELETE removes data." },
+    { "id": 15, "userId": 1, "title": "Introduction to Bootstrap", "body": "Bootstrap provides ready-to-use styles and responsive layout utilities." },
+    { "id": 16, "userId": 3, "title": "Debugging JavaScript", "body": "Browser developer tools help developers inspect errors and debug applications." },
+    { "id": 17, "userId": 2, "title": "Working with Environment Variables", "body": "Environment variables help configure applications for different environments." },
+    { "id": 18, "userId": 1, "title": "Pagination in Web Applications", "body": "Pagination divides large collections of data into smaller pages." },
+    { "id": 19, "userId": 3, "title": "Introduction to JSON Server", "body": "JSON Server creates a REST API from a JSON file for development and testing." },
+    { "id": 20, "userId": 2, "title": "Building a CRUD Application", "body": "CRUD applications support creating, reading, updating, and deleting data." }
+  ],
+  "users": [
+    { "id": 1, "name": "Long Tran", "username": "longtran", "email": "long@example.com" },
+    { "id": 2, "name": "Minh Nguyen", "username": "minhnguyen", "email": "minh@example.com" },
+    { "id": 3, "name": "Linh Pham", "username": "linhpham", "email": "linh@example.com" }
   ],
   "comments": [
-    { "id": "1", "text": "Bài viết hay quá!", "postId": "1" }
-  ],
-  "profile": {
-    "name": "Dev"
-  }
+    { "id": 1, "postId": 1, "name": "Great introduction", "email": "minh@example.com", "body": "This article helped me understand the basics of React." },
+    { "id": 2, "postId": 1, "name": "Useful example", "email": "linh@example.com", "body": "The component example is easy to follow." },
+    { "id": 3, "postId": 2, "name": "Helpful explanation", "email": "long@example.com", "body": "Hooks make function components much more powerful." },
+    { "id": 4, "postId": 2, "name": "Good article", "email": "minh@example.com", "body": "I would like to see more examples of useEffect." },
+    { "id": 5, "postId": 3, "name": "JavaScript beginner", "email": "linh@example.com", "body": "This is a good starting point for beginners." },
+    { "id": 6, "postId": 3, "name": "Nice summary", "email": "long@example.com", "body": "The key concepts are explained clearly." },
+    { "id": 7, "postId": 4, "name": "HTML question", "email": "minh@example.com", "body": "Could you provide more examples of semantic HTML?" },
+    { "id": 8, "postId": 5, "name": "CSS feedback", "email": "linh@example.com", "body": "Responsive layouts are very useful for mobile devices." },
+    { "id": 9, "postId": 5, "name": "Great tips", "email": "long@example.com", "body": "Flexbox and Grid are worth learning." },
+    { "id": 10, "postId": 6, "name": "Axios user", "email": "minh@example.com", "body": "Axios makes HTTP requests straightforward." },
+    { "id": 11, "postId": 6, "name": "Request handling", "email": "linh@example.com", "body": "Error handling is important for API requests." },
+    { "id": 12, "postId": 7, "name": "API learner", "email": "long@example.com", "body": "The HTTP method comparison is useful." },
+    { "id": 13, "postId": 7, "name": "REST question", "email": "minh@example.com", "body": "How should API errors be represented?" },
+    { "id": 14, "postId": 8, "name": "Node beginner", "email": "linh@example.com", "body": "I am starting to learn backend development." },
+    { "id": 15, "postId": 9, "name": "Routing help", "email": "long@example.com", "body": "Nested routes are useful for larger applications." },
+    { "id": 16, "postId": 9, "name": "Navigation feedback", "email": "minh@example.com", "body": "The route examples are easy to understand." },
+    { "id": 17, "postId": 10, "name": "JSON user", "email": "linh@example.com", "body": "JSON is simple to read and write." },
+    { "id": 18, "postId": 11, "name": "Git learner", "email": "long@example.com", "body": "Small commits make changes easier to review." },
+    { "id": 19, "postId": 11, "name": "Version control", "email": "minh@example.com", "body": "Git is essential for team projects." },
+    { "id": 20, "postId": 12, "name": "Component feedback", "email": "linh@example.com", "body": "Reusable components reduce duplicated code." },
+    { "id": 21, "postId": 13, "name": "Form question", "email": "long@example.com", "body": "Client-side validation improves user experience." },
+    { "id": 22, "postId": 13, "name": "Validation tips", "email": "minh@example.com", "body": "Server-side validation is important too." },
+    { "id": 23, "postId": 14, "name": "HTTP learner", "email": "linh@example.com", "body": "The difference between PUT and PATCH is clearer now." },
+    { "id": 24, "postId": 15, "name": "Bootstrap user", "email": "long@example.com", "body": "Bootstrap makes responsive design faster." },
+    { "id": 25, "postId": 15, "name": "UI feedback", "email": "minh@example.com", "body": "The utility classes are convenient." },
+    { "id": 26, "postId": 16, "name": "Debugging learner", "email": "linh@example.com", "body": "The browser console is very helpful." },
+    { "id": 27, "postId": 17, "name": "Environment setup", "email": "long@example.com", "body": "Environment variables make configuration easier." },
+    { "id": 28, "postId": 17, "name": "Vite user", "email": "minh@example.com", "body": "Remember to restart Vite after changing .env." },
+    { "id": 29, "postId": 18, "name": "Pagination question", "email": "linh@example.com", "body": "How can I preserve filters between pages?" },
+    { "id": 30, "postId": 19, "name": "JSON Server user", "email": "long@example.com", "body": "This is useful for frontend development." },
+    { "id": 31, "postId": 19, "name": "API testing", "email": "minh@example.com", "body": "I will try the nested comments endpoint." },
+    { "id": 32, "postId": 20, "name": "CRUD learner", "email": "linh@example.com", "body": "A persistent JSON file is useful for testing CRUD operations." }
+  ]
 }
