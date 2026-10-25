@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Alert, Container } from 'react-bootstrap';
 import {
   Outlet,
@@ -13,6 +13,10 @@ export default function MainLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [flash, setFlash] = useState(null);
+
+  const notify = useCallback((type, message) => {
+    setFlash({ type, message });
+  }, []);
 
   useEffect(() => {
     const message = location.state?.flash;
@@ -32,7 +36,14 @@ export default function MainLayout() {
         state: null,
       }
     );
-  }, [location.key, location.state, location.pathname, location.search, location.hash, navigate]);
+  }, [
+    location.key,
+    location.state,
+    location.pathname,
+    location.search,
+    location.hash,
+    navigate,
+  ]);
 
   return (
     <>
@@ -49,7 +60,7 @@ export default function MainLayout() {
           </Alert>
         )}
 
-        <Outlet />
+        <Outlet context={{ notify }} />
       </Container>
     </>
   );
