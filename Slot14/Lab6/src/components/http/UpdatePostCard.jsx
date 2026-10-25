@@ -1,74 +1,52 @@
 
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Card, Form, Button, Spinner, Alert } from 'react-bootstrap';
-import postApi from '../../api/postApi';
-import LoadingSpinner from '../common/LoadingSpinner';
-import ErrorAlert from '../common/ErrorAlert';
-import ResultBox from './ResultBox';
+import { useState, useEffect } from "react";
+import { Card, Form, Button, Spinner, Alert } from "react-bootstrap";
+import useAxios from "../../hooks/useAxios";
+import AsyncContent from "../common/AsyncContent";
+import postApi from "../../api/postApi";
+import ResultBox from "./ResultBox";
 
 const POST_ID = 1;
 
 export default function UpdatePostCard() {
+  const { data, loading, error, refetch } = useAxios(
+    (signal) => postApi.getById(POST_ID, signal),
+    []
+  );
+
   const [form, setForm] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState(null);
   const [saveError, setSaveError] = useState(null);
 
   useEffect(() => {
-    const controller = new AbortController();
+    if (data) setForm(data);
+  }, [data]);
 
-    const load = async () => {
-      try {
-        const res = await postApi.getById(
-          POST_ID,
-          controller.signal
-        );
-        setForm(res.data);
-      } catch (err) {
-        if (axios.isCancel(err)) return;
-        setError(err.userMessage || err.message);
-      } finally {
-        if (!controller.signal.aborted) setLoading(false);
-      }
-    };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  };
 
-    load();
-    return () => controller.abort();
-  }, []);
-
-  const handleUpdate = async () => {
-    if (!form) return;
-
-    if (form.title.trim().length < 5 ||
-        form.body.trim().length < 10) {
-      setSaveError(
-        'Tiêu đề cần ít nhất 5 ký tự và nội dung ít nhất 10 ký tự.'
-      );
-      return;
-    }
-
+  const handleUpdate = async (event) => {
+    event.preventDefault();
     setSaving(true);
-    setSaveError(null);
     setResult(null);
+    setSaveError(null);
 
     try {
-      const res = await postApi.update(POST_ID, {
-        id: form.id,
-        userId: form.userId,
-        title: form.title.trim(),
-        body: form.body.trim()
+      const response = await postApi.update(POST_ID, {
+        ...form,
+        id: POST_ID,
+        userId: Number(form.userId),
       });
 
-      setResult({
-        status: res.status,
-        duration: res.duration,
-        data: res.data
-      });
+      setResult(response);
     } catch (err) {
-      setSaveError(err.userMessage || err.message);
+      setSaveError(err.userMessage ?? err.message);
     } finally {
       setSaving(false);
     }
@@ -77,56 +55,66 @@ export default function UpdatePostCard() {
   return (
     <Card className="h-100 shadow-sm">
       <Card.Header>
-        <strong>2.3 · PUT</strong> /posts/{POST_ID}
+        <strong>2.3 · GET + PUT</strong> /posts/1
       </Card.Header>
 
       <Card.Body>
-        {loading && <LoadingSpinner />}
-        {!loading && error && <ErrorAlert message={error} />}
+        <AsyncContent
+          loading={loading}
+          error={error}
+          data={form}
+          onRetry={refetch}
+          emptyText="Không tìm thấy bài viết"
+        >
+          {(post) => (
+            <Form onSubmit={handleUpdate}>
+              <Form.Group className="mb-3">
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                  name="title"
+                  value={post.title ?? ""}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
 
-        {!loading && form && (
-          <>
-            <Form.Group className="mb-3">
-              <Form.Label>Tiêu đề</Form.Label>
-              <Form.Control
-                value={form.title}
-                isInvalid={form.title.trim().length < 5}
-                onChange={(e) =>
-                  setForm({ ...form, title: e.target.value })
-                }
-              />
-              <Form.Control.Feedback type="invalid">
-                Tiêu đề tối thiểu 5 ký tự
-              </Form.Control.Feedback>
-            </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Body</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={4}
+                  name="body"
+                  value={post.body ?? ""}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Nội dung</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={form.body}
-                isInvalid={form.body.trim().length < 10}
-                onChange={(e) =>
-                  setForm({ ...form, body: e.target.value })
-                }
-              />
-              <Form.Control.Feedback type="invalid">
-                Nội dung tối thiểu 10 ký tự
-              </Form.Control.Feedback>
-            </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>User ID</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="userId"
+                  min="1"
+                  value={post.userId ?? ""}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
 
-            <Button
-              onClick={handleUpdate}
-              disabled={saving || form.title.trim().length < 5 ||
-                form.body.trim().length < 10}
-            >
-              {saving ? (
-                <><Spinner size="sm" /> Đang lưu...</>
-              ) : 'Cập nhật (PUT)'}
-            </Button>
-          </>
-        )}
+              <Button type="submit" disabled={saving}>
+                {saving ? (
+                  <>
+                    <Spinner size="sm" className="me-2" />
+                    Đang cập nhật...
+                  </>
+                ) : (
+                  "Cập nhật (PUT)"
+                )}
+              </Button>
+            </Form>
+          )}
+        </AsyncContent>
 
         {saveError && (
           <Alert variant="danger" className="mt-3">
@@ -134,7 +122,11 @@ export default function UpdatePostCard() {
           </Alert>
         )}
 
-        <ResultBox result={result} />
+        {result && (
+          <div className="mt-3">
+            <ResultBox result={result} />
+          </div>
+        )}
       </Card.Body>
     </Card>
   );

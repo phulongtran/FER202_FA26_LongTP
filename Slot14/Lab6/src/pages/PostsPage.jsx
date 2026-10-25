@@ -1,10 +1,9 @@
 
-import { useEffect, useState } from 'react';
 import { Alert, Button, Card, Form, Spinner } from 'react-bootstrap';
 import { useSearchParams, Link } from 'react-router-dom';
-import axios from 'axios';
 
 import postApi, { userApi } from '../api/postApi';
+import useAxios from '../hooks/useAxios';
 
 const PAGE_SIZE = 10;
 
@@ -14,65 +13,32 @@ export default function PostsPage() {
   const page = Math.max(1, Number(searchParams.get('page')) || 1);
   const userId = searchParams.get('userId') || '';
 
-  const [posts, setPosts] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
-  // Lấy danh sách tác giả
-  useEffect(() => {
-    const controller = new AbortController();
+  const { data: users } = useAxios(
+    (signal) => userApi.getAll(signal),
+    [],
+    { initialData: [] }
+  );
 
-    userApi.getAll(controller.signal)
-      .then((res) => setUsers(res.data))
-      .catch((err) => {
-        if (!axios.isCancel(err)) {
-          console.error('Không thể tải danh sách tác giả:', err);
-        }
-      });
+  const params = { _page: page, _limit: PAGE_SIZE };
 
-    return () => controller.abort();
-  }, []);
+  if (userId) {
+    params.userId = userId;
+  }
 
-  // Lấy bài viết theo trang và tác giả
-  useEffect(() => {
-    const controller = new AbortController();
+  const {
+    data: posts,
+    headers,
+    loading,
+    error,
+    refetch,
+  } = useAxios(
+    (signal) => postApi.getAll(params, signal),
+    [page, userId],
+    { initialData: [] }
+  );
 
-    async function loadPosts() {
-      setLoading(true);
-      setError('');
-
-      try {
-        const params = {
-          _page: page,
-          _limit: PAGE_SIZE,
-        };
-
-        if (userId) {
-          params.userId = userId;
-        }
-
-        const res = await postApi.getAll(params, controller.signal);
-
-        setPosts(res.data);
-        setTotalCount(Number(res.headers['x-total-count']) || 0);
-      } catch (err) {
-        if (!axios.isCancel(err)) {
-          setError(err.userMessage || err.message || 'Không thể tải bài viết.');
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadPosts();
-
-    return () => controller.abort();
-  }, [page, userId]);
-
+  const totalCount = Number(headers['x-total-count'] ?? 0);
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   function changeParams(nextValues) {
@@ -108,7 +74,6 @@ export default function PostsPage() {
         <Card.Body>
           <Form.Group>
             <Form.Label>Lọc theo tác giả</Form.Label>
-
             <Form.Select
               value={userId}
               onChange={(event) =>
@@ -119,7 +84,6 @@ export default function PostsPage() {
               }
             >
               <option value="">Tất cả tác giả</option>
-
               {users.map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.name}
@@ -130,7 +94,22 @@ export default function PostsPage() {
         </Card.Body>
       </Card>
 
-      {error && <Alert variant="danger">{error}</Alert>}
+      {error && (
+        <Alert
+          variant="danger"
+          dismissible={false}
+        >
+          {error}
+          <Button
+            variant="outline-danger"
+            size="sm"
+            className="ms-3"
+            onClick={refetch}
+          >
+            Thử lại
+          </Button>
+        </Alert>
+      )}
 
       {loading ? (
         <div className="text-center py-5">
@@ -151,10 +130,7 @@ export default function PostsPage() {
                     </div>
 
                     <Card.Title>{post.title}</Card.Title>
-
-                    <Card.Text>
-                      {post.body}
-                    </Card.Text>
+                    <Card.Text>{post.body}</Card.Text>
 
                     <Button
                       as={Link}
