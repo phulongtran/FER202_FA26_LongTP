@@ -1,9 +1,20 @@
 
-import { Alert, Button, Card, Form, Spinner } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Button,
+  Card,
+  Col,
+  Form,
+  InputGroup,
+  Row,
+  Spinner,
+} from 'react-bootstrap';
 import { useSearchParams, Link } from 'react-router-dom';
 
 import postApi, { userApi } from '../api/postApi';
 import useAxios from '../hooks/useAxios';
+import useDebounce from '../hooks/useDebounce';
 
 const PAGE_SIZE = 10;
 
@@ -12,34 +23,16 @@ export default function PostsPage() {
 
   const page = Math.max(1, Number(searchParams.get('page')) || 1);
   const userId = searchParams.get('userId') || '';
+  const q = searchParams.get('q') || '';
 
+  const [keyword, setKeyword] = useState(q);
+  const debounced = useDebounce(keyword.trim(), 500);
 
   const { data: users } = useAxios(
     (signal) => userApi.getAll(signal),
     [],
     { initialData: [] }
   );
-
-  const params = { _page: page, _limit: PAGE_SIZE };
-
-  if (userId) {
-    params.userId = userId;
-  }
-
-  const {
-    data: posts,
-    headers,
-    loading,
-    error,
-    refetch,
-  } = useAxios(
-    (signal) => postApi.getAll(params, signal),
-    [page, userId],
-    { initialData: [] }
-  );
-
-  const totalCount = Number(headers['x-total-count'] ?? 0);
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   function changeParams(nextValues) {
     const nextParams = new URLSearchParams(searchParams);
@@ -55,13 +48,46 @@ export default function PostsPage() {
     setSearchParams(nextParams);
   }
 
+  // Đồng bộ từ khóa đã debounce lên URL và đưa trang về 1.
+  useEffect(() => {
+    if (debounced !== q) {
+      changeParams({ q: debounced, page: 1 });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounced]);
+
+  // Nếu URL thay đổi từ bên ngoài, đồng bộ lại ô tìm kiếm.
+  useEffect(() => {
+    setKeyword(q);
+  }, [q]);
+
+  const params = { _page: page, _limit: PAGE_SIZE };
+
+  if (userId) params.userId = userId;
+  if (q) params.q = q;
+
+  const {
+    data: posts,
+    headers,
+    loading,
+    error,
+    refetch,
+  } = useAxios(
+    (signal) => postApi.getAll(params, signal),
+    [page, userId, q],
+    { initialData: [] }
+  );
+
+  const totalCount = Number(headers['x-total-count'] ?? 0);
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
   return (
     <div>
       <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
           <h2 className="mb-1">Danh sách bài viết</h2>
           <p className="text-muted mb-0">
-            Lọc bài viết theo tác giả và điều hướng bằng phân trang.
+            Tìm kiếm, lọc theo tác giả và điều hướng bằng phân trang.
           </p>
         </div>
 
@@ -72,33 +98,55 @@ export default function PostsPage() {
 
       <Card className="mb-4">
         <Card.Body>
-          <Form.Group>
-            <Form.Label>Lọc theo tác giả</Form.Label>
-            <Form.Select
-              value={userId}
-              onChange={(event) =>
-                changeParams({
-                  userId: event.target.value,
-                  page: 1,
-                })
-              }
-            >
-              <option value="">Tất cả tác giả</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
+          <Row className="g-3">
+            <Col md={6}>
+              <Form.Label>Tìm kiếm bài viết</Form.Label>
+              <InputGroup>
+                <InputGroup.Text>🔍</InputGroup.Text>
+                <Form.Control
+                  placeholder="Tìm bài viết..."
+                  value={keyword}
+                  onChange={(event) => setKeyword(event.target.value)}
+                />
+                {keyword && (
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setKeyword('')}
+                  >
+                    ✕
+                  </Button>
+                )}
+              </InputGroup>
+              <Form.Text className="text-muted">
+                Tìm kiếm sau khi bạn ngừng gõ 500ms.
+              </Form.Text>
+            </Col>
+
+            <Col md={6}>
+              <Form.Label>Lọc theo tác giả</Form.Label>
+              <Form.Select
+                value={userId}
+                onChange={(event) =>
+                  changeParams({
+                    userId: event.target.value,
+                    page: 1,
+                  })
+                }
+              >
+                <option value="">Tất cả tác giả</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
 
       {error && (
-        <Alert
-          variant="danger"
-          dismissible={false}
-        >
+        <Alert variant="danger">
           {error}
           <Button
             variant="outline-danger"
@@ -117,7 +165,11 @@ export default function PostsPage() {
           <p className="mt-2">Đang tải bài viết...</p>
         </div>
       ) : !error && posts.length === 0 ? (
-        <Alert variant="info">Không tìm thấy bài viết nào.</Alert>
+        <Alert variant="info">
+          {q
+            ? 'Không có bài viết phù hợp với từ khóa.'
+            : 'Không tìm thấy bài viết nào.'}
+        </Alert>
       ) : !error ? (
         <>
           <div className="row g-3">
@@ -148,7 +200,8 @@ export default function PostsPage() {
 
           <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4">
             <span className="text-muted">
-              Trang {page}{totalPages > 0 ? ` / ${totalPages}` : ''}
+              Trang {page}
+              {totalPages > 0 ? ` / ${totalPages}` : ''}
               {' · '}
               Tổng {totalCount} bài viết
             </span>
