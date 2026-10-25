@@ -1,16 +1,26 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import {
+  Card,
+  Spinner,
+  Alert,
+  Form,
+  Row,
+  Col,
+  Badge,
+  Button
+} from 'react-bootstrap';
 import postApi from './api/postApi';
 
-const AxiosDemo = () => {
+export default function AxiosDemo() {
   const [postId, setPostId] = useState(1);
   const [data, setData] = useState(null);
+  const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Tạo controller mới cho mỗi request
     const controller = new AbortController();
 
     const fetchPost = async () => {
@@ -18,21 +28,23 @@ const AxiosDemo = () => {
       setError(null);
 
       try {
-        // Gọi API thông qua service, truyền signal để có thể hủy
         const res = await postApi.getById(
           postId,
           controller.signal
         );
 
         setData(res.data);
+        setMeta({
+          status: res.status,
+          duration: res.duration,
+          contentType: res.headers['content-type']
+        });
       } catch (err) {
-        // Request bị hủy thì bỏ qua, không hiển thị lỗi
         if (axios.isCancel(err)) return;
 
         setData(null);
-        setError(err.userMessage ?? err.message);
+        setError(err.userMessage || err.message);
       } finally {
-        // Không tắt loading nếu request này đã bị hủy
         if (!controller.signal.aborted) {
           setLoading(false);
         }
@@ -41,84 +53,95 @@ const AxiosDemo = () => {
 
     fetchPost();
 
-    // Hủy request cũ khi postId đổi hoặc component unmount
     return () => controller.abort();
   }, [postId]);
 
-  const handlePostIdChange = (e) => {
-    const value = Number(e.target.value);
-
-    if (value >= 1 && value <= 100) {
-      setPostId(value);
-    }
-  };
-
   return (
-    <div className="container my-4">
-      <h1>Axios Demo</h1>
+    <>
+      <h1 className="mb-3">
+        Axios Demo{' '}
+        <Badge bg="primary">react-bootstrap</Badge>
+      </h1>
 
-      <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <label htmlFor="postId" className="form-label mb-0">
-          Post ID (1–100):
-        </label>
+      <Row className="mb-3 g-2 align-items-end">
+        <Col xs="auto">
+          <Form.Label htmlFor="postId">
+            Post ID (1–100, thử 999 để xem lỗi 404)
+          </Form.Label>
 
-        <input
-          id="postId"
-          className="form-control"
-          style={{ width: '120px' }}
-          type="number"
-          min={1}
-          max={100}
-          value={postId}
-          onChange={handlePostIdChange}
-        />
+          <Form.Control
+            id="postId"
+            type="number"
+            min={1}
+            value={postId}
+            onChange={(e) =>
+              setPostId(Number(e.target.value) || 1)
+            }
+            style={{ width: 160 }}
+          />
+        </Col>
 
-        <button
-          className="btn btn-outline-success"
-          disabled={postId <= 1}
-          onClick={() =>
-            setPostId((id) => Math.max(1, id - 1))
-          }
-        >
-          ‹ Trước
-        </button>
+        <Col xs="auto">
+          <Button
+            variant="outline-secondary"
+            disabled={postId <= 1}
+            onClick={() =>
+              setPostId((id) => Math.max(1, id - 1))
+            }
+          >
+            ‹ Trước
+          </Button>{' '}
 
-        <button
-          className="btn btn-success"
-          disabled={postId >= 100}
-          onClick={() =>
-            setPostId((id) => Math.min(100, id + 1))
-          }
-        >
-          Sau ›
-        </button>
-      </div>
+          <Button
+            variant="outline-secondary"
+            onClick={() => setPostId((id) => id + 1)}
+          >
+            Sau ›
+          </Button>
+        </Col>
+      </Row>
 
       {loading && (
-        <div className="alert alert-info">
-          Đang tải bài viết #{postId}...
+        <div className="text-center py-5">
+          <Spinner animation="border" />
+          <p className="mt-2">Đang tải bài viết...</p>
         </div>
       )}
 
       {!loading && error && (
-        <div className="alert alert-danger">
-          Error: {error}
-        </div>
+        <Alert variant="danger">
+          ❌ Error: {error}
+        </Alert>
       )}
 
       {!loading && data && (
-        <div className="card">
-          <div className="card-body">
-            <h2 className="card-title">
-              #{data.id} – {data.title}
-            </h2>
+        <Card className="shadow-sm">
+          <Card.Header>
+            Post #{data.id} · userId {data.userId}
+          </Card.Header>
 
-            <p className="card-text">{data.body}</p>
-          </div>
-        </div>
+          <Card.Body>
+            <Card.Title
+              as="h2"
+              className="fs-4 text-capitalize"
+            >
+              {data.title}
+            </Card.Title>
+
+            <Card.Text style={{ whiteSpace: 'pre-line' }}>
+              {data.body}
+            </Card.Text>
+          </Card.Body>
+
+          {meta && (
+            <Card.Footer className="small text-muted">
+              Status{' '}
+              <Badge bg="success">{meta.status}</Badge>
+              {' '}· {meta.duration} ms · {meta.contentType}
+            </Card.Footer>
+          )}
+        </Card>
       )}
-    </div>
+    </>
   );
-};
-
-export default AxiosDemo;
+}

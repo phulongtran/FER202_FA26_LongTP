@@ -1,40 +1,48 @@
 
+import { Container, Row, Col } from 'react-bootstrap';
 import AxiosDemo from './AxiosDemo';
-import PostList from './PostList';
-import CreatePost from './CreatePost';
-import UpdatePost from './UpdatePost';
-import PatchPost from './PatchPost';
-import DeletePost from './DeletePost';
-import RequestConfig from './RequestConfig';
-import PostDetail from './PostDetail';
-function App() {
+
+import PostListCard from './components/http/PostListCard';
+import CreatePostCard from './components/http/CreatePostCard';
+import UpdatePostCard from './components/http/UpdatePostCard';
+import PatchPostCard from './components/http/PatchPostCard';
+import DeletePostCard from './components/http/DeletePostCard';
+import RequestConfigCard from './components/http/RequestConfigCard';
+
+export default function App() {
   return (
-    <div>
-      <h1 className="text-center text-success my-4">
-        DemoAxios
-      </h1>
-
+    <Container className="py-4">
       <AxiosDemo />
-      <hr />
 
-      <PostList />
-      <hr />
+      <h2 className="mt-5 mb-3">
+        HTTP Requests với axios
+      </h2>
 
-      <CreatePost />
-      <hr />
+      <Row xs={1} lg={2} className="g-4">
+        <Col>
+          <PostListCard />
+        </Col>
 
-      <UpdatePost />
-      <hr />
+        <Col>
+          <CreatePostCard />
+        </Col>
 
-      <PatchPost />
-      <hr />
+        <Col>
+          <UpdatePostCard />
+        </Col>
 
-      <DeletePost />
-      <hr />
+        <Col>
+          <PatchPostCard />
+        </Col>
 
-      <RequestConfig />
-    </div>
+        <Col>
+          <DeletePostCard />
+        </Col>
+
+        <Col>
+          <RequestConfigCard />
+        </Col>
+      </Row>
+    </Container>
   );
 }
-
-export default App;
