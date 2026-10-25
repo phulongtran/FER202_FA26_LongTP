@@ -1,7 +1,6 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Button, Card, Form, Spinner } from 'react-bootstrap';
-
 import useAxios from '../../hooks/useAxios';
 import AsyncContent from '../common/AsyncContent';
 import postApi from '../../api/postApi';
@@ -26,13 +25,11 @@ export default function PatchPostCard() {
   const [result, setResult] = useState(null);
   const [saveError, setSaveError] = useState('');
 
-  // Đồng bộ tiêu đề khi tải bài viết thành công
-  const [loadedPostId, setLoadedPostId] = useState(null);
-
-  if (post && loadedPostId !== post.id) {
-    setLoadedPostId(post.id);
-    setTitle(post.title ?? '');
-  }
+  useEffect(() => {
+    if (post) {
+      setTitle(post.title ?? '');
+    }
+  }, [post]);
 
   async function handlePatch(event) {
     event.preventDefault();
@@ -75,29 +72,26 @@ export default function PatchPostCard() {
           onRetry={refetch}
           emptyText="Không tìm thấy bài viết"
         >
-          {(values) => (
+          {() => (
             <Form onSubmit={handlePatch}>
               <Form.Group className="mb-3">
-                <Form.Label>Tiêu đề hiện tại</Form.Label>
+                <Form.Label>Tiêu đề mới</Form.Label>
                 <Form.Control
+                  type="text"
                   value={title}
                   onChange={(event) => setTitle(event.target.value)}
-                  required
+                  placeholder="Nhập tiêu đề mới"
                 />
               </Form.Group>
 
-              <p className="small text-muted">
-                Chỉ cập nhật trường title; các trường khác không được gửi.
-              </p>
-
-              <Button type="submit" variant="success" disabled={saving}>
+              <Button type="submit" disabled={saving}>
                 {saving ? (
                   <>
                     <Spinner size="sm" className="me-2" />
                     Đang cập nhật...
                   </>
                 ) : (
-                  'Cập nhật tiêu đề'
+                  'PATCH tiêu đề'
                 )}
               </Button>
             </Form>
