@@ -1,41 +1,58 @@
 
-import { useState, useEffect } from "react";
-import { Card, Form, Button, Spinner, Alert } from "react-bootstrap";
-import useAxios from "../../hooks/useAxios";
-import AsyncContent from "../common/AsyncContent";
-import postApi from "../../api/postApi";
-import ResultBox from "./ResultBox";
+import { useEffect, useState } from 'react';
+import { Alert, Button, Card, Form, Spinner } from 'react-bootstrap';
+
+import useAxios from '../../hooks/useAxios';
+import AsyncContent from '../common/AsyncContent';
+import postApi from '../../api/postApi';
+import ResultBox from './ResultBox';
 
 const POST_ID = 1;
 
 export default function UpdatePostCard() {
-  const { data, loading, error, refetch } = useAxios(
+  const {
+    data: post,
+    loading,
+    error,
+    refetch,
+  } = useAxios(
     (signal) => postApi.getById(POST_ID, signal),
-    []
+    [],
+    { initialData: null }
   );
 
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState(null);
-  const [saveError, setSaveError] = useState(null);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
-    if (data) setForm(data);
-  }, [data]);
+    if (post) {
+      setForm({
+        title: post.title ?? '',
+        body: post.body ?? '',
+        userId: post.userId ?? 1,
+      });
+    }
+  }, [post]);
 
-  const handleChange = (event) => {
+  function handleChange(event) {
     const { name, value } = event.target;
+
     setForm((current) => ({
       ...current,
-      [name]: value,
+      [name]: name === 'userId' ? Number(value) : value,
     }));
-  };
+  }
 
-  const handleUpdate = async (event) => {
+  async function handleUpdate(event) {
     event.preventDefault();
+
+    if (!form) return;
+
     setSaving(true);
     setResult(null);
-    setSaveError(null);
+    setSaveError('');
 
     try {
       const response = await postApi.update(POST_ID, {
@@ -46,11 +63,11 @@ export default function UpdatePostCard() {
 
       setResult(response);
     } catch (err) {
-      setSaveError(err.userMessage ?? err.message);
+      setSaveError(err.userMessage ?? err.message ?? 'Không thể cập nhật bài viết.');
     } finally {
       setSaving(false);
     }
-  };
+  }
 
   return (
     <Card className="h-100 shadow-sm">
@@ -66,25 +83,25 @@ export default function UpdatePostCard() {
           onRetry={refetch}
           emptyText="Không tìm thấy bài viết"
         >
-          {(post) => (
+          {(values) => (
             <Form onSubmit={handleUpdate}>
               <Form.Group className="mb-3">
-                <Form.Label>Title</Form.Label>
+                <Form.Label>Tiêu đề</Form.Label>
                 <Form.Control
                   name="title"
-                  value={post.title ?? ""}
+                  value={values.title}
                   onChange={handleChange}
                   required
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Body</Form.Label>
+                <Form.Label>Nội dung</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={4}
                   name="body"
-                  value={post.body ?? ""}
+                  value={values.body}
                   onChange={handleChange}
                   required
                 />
@@ -94,22 +111,22 @@ export default function UpdatePostCard() {
                 <Form.Label>User ID</Form.Label>
                 <Form.Control
                   type="number"
-                  name="userId"
                   min="1"
-                  value={post.userId ?? ""}
+                  name="userId"
+                  value={values.userId}
                   onChange={handleChange}
                   required
                 />
               </Form.Group>
 
-              <Button type="submit" disabled={saving}>
+              <Button type="submit" variant="success" disabled={saving}>
                 {saving ? (
                   <>
                     <Spinner size="sm" className="me-2" />
                     Đang cập nhật...
                   </>
                 ) : (
-                  "Cập nhật (PUT)"
+                  'Cập nhật bài viết'
                 )}
               </Button>
             </Form>
