@@ -15,6 +15,8 @@ const postApi = {
 
   remove: (id) =>
     axiosClient.delete(`/posts/${id}`),
+  patch: (id, data) =>
+  axiosClient.patch(`/posts/${id}`, data),
 };
 
 export const userApi = {

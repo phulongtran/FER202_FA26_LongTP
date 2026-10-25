@@ -1,74 +1,120 @@
 
 import { useState } from 'react';
-import {
-  Card,
-  Form,
-  Button,
-  InputGroup,
-  Spinner,
-  Alert
-} from 'react-bootstrap';
+import { Alert, Button, Card, Form, Spinner } from 'react-bootstrap';
+
+import useAxios from '../../hooks/useAxios';
+import AsyncContent from '../common/AsyncContent';
 import postApi from '../../api/postApi';
 import ResultBox from './ResultBox';
 
+const POST_ID = 1;
+
 export default function PatchPostCard() {
+  const {
+    data: post,
+    loading,
+    error,
+    refetch,
+  } = useAxios(
+    (signal) => postApi.getById(POST_ID, signal),
+    [],
+    { initialData: null }
+  );
+
   const [title, setTitle] = useState('');
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [saveError, setSaveError] = useState('');
 
-  const handlePatch = async () => {
+  // Đồng bộ tiêu đề khi tải bài viết thành công
+  const [loadedPostId, setLoadedPostId] = useState(null);
+
+  if (post && loadedPostId !== post.id) {
+    setLoadedPostId(post.id);
+    setTitle(post.title ?? '');
+  }
+
+  async function handlePatch(event) {
+    event.preventDefault();
+
+    if (!title.trim()) {
+      setSaveError('Vui lòng nhập tiêu đề.');
+      return;
+    }
+
     setSaving(true);
-    setError(null);
     setResult(null);
+    setSaveError('');
 
     try {
-      const res = await postApi.patch(1, {
-        title: title.trim()
+      const response = await postApi.patch(POST_ID, {
+        title: title.trim(),
       });
 
-      setResult({
-        status: res.status,
-        duration: res.duration,
-        data: res.data
-      });
+      setResult(response);
     } catch (err) {
-      setError(err.userMessage || err.message);
+      setSaveError(
+        err.userMessage ?? err.message ?? 'Không thể cập nhật tiêu đề.'
+      );
     } finally {
       setSaving(false);
     }
-  };
+  }
 
   return (
     <Card className="h-100 shadow-sm">
       <Card.Header>
-        <strong>2.4 · PATCH</strong> /posts/1
+        <strong>2.4 · GET + PATCH</strong> /posts/1
       </Card.Header>
 
       <Card.Body>
-        <InputGroup>
-          <Form.Control
-            placeholder="Tiêu đề mới"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+        <AsyncContent
+          loading={loading}
+          error={error}
+          data={post}
+          onRetry={refetch}
+          emptyText="Không tìm thấy bài viết"
+        >
+          {(values) => (
+            <Form onSubmit={handlePatch}>
+              <Form.Group className="mb-3">
+                <Form.Label>Tiêu đề hiện tại</Form.Label>
+                <Form.Control
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  required
+                />
+              </Form.Group>
 
-          <Button
-            variant="warning"
-            onClick={handlePatch}
-            disabled={!title.trim() || saving}
-          >
-            {saving ? <Spinner size="sm" /> : 'PATCH'}
-          </Button>
-        </InputGroup>
+              <p className="small text-muted">
+                Chỉ cập nhật trường title; các trường khác không được gửi.
+              </p>
 
-        {error && (
+              <Button type="submit" variant="success" disabled={saving}>
+                {saving ? (
+                  <>
+                    <Spinner size="sm" className="me-2" />
+                    Đang cập nhật...
+                  </>
+                ) : (
+                  'Cập nhật tiêu đề'
+                )}
+              </Button>
+            </Form>
+          )}
+        </AsyncContent>
+
+        {saveError && (
           <Alert variant="danger" className="mt-3">
-            {error}
+            {saveError}
           </Alert>
         )}
 
-        <ResultBox result={result} />
+        {result && (
+          <div className="mt-3">
+            <ResultBox result={result} />
+          </div>
+        )}
       </Card.Body>
     </Card>
   );
