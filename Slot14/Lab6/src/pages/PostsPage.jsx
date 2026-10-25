@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import {
   Alert,
+  Badge,
   Button,
   Card,
   Col,
@@ -10,16 +11,18 @@ import {
   Row,
   Spinner,
 } from 'react-bootstrap';
-import { useSearchParams, Link } from 'react-router-dom';
+import { Link, useOutletContext, useSearchParams } from 'react-router-dom';
 
 import postApi, { userApi } from '../api/postApi';
 import useAxios from '../hooks/useAxios';
 import useDebounce from '../hooks/useDebounce';
+import ConfirmModal from '../components/ConfirmModal';
 
 const PAGE_SIZE = 10;
 
 export default function PostsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { notify } = useOutletContext();
 
   const page = Math.max(1, Number(searchParams.get('page')) || 1);
   const userId = searchParams.get('userId') || '';
@@ -27,6 +30,13 @@ export default function PostsPage() {
 
   const [keyword, setKeyword] = useState(q);
   const debounced = useDebounce(keyword.trim(), 500);
+
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [removed, setRemoved] = useState(0);
+  const [toDelete, setToDelete] = useState(null);
+  const [confirmBulk, setConfirmBulk] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const { data: users } = useAxios(
     (signal) => userApi.getAll(signal),
@@ -48,7 +58,6 @@ export default function PostsPage() {
     setSearchParams(nextParams);
   }
 
-  // Đồng bộ từ khóa đã debounce lên URL và đưa trang về 1.
   useEffect(() => {
     if (debounced !== q) {
       changeParams({ q: debounced, page: 1 });
@@ -56,18 +65,27 @@ export default function PostsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced]);
 
-  // Nếu URL thay đổi từ bên ngoài, đồng bộ lại ô tìm kiếm.
   useEffect(() => {
     setKeyword(q);
   }, [q]);
 
-  const params = { _page: page, _limit: PAGE_SIZE };
+  // Đổi trang hoặc bộ lọc thì bỏ các lựa chọn cũ.
+  useEffect(() => {
+    setSelectedIds([]);
+    setRemoved(0);
+  }, [page, userId, q]);
+
+  const params = {
+    _page: page,
+    _limit: PAGE_SIZE,
+  };
 
   if (userId) params.userId = userId;
   if (q) params.q = q;
 
   const {
     data: posts,
+    setData: setPosts,
     headers,
     loading,
     error,
@@ -78,22 +96,162 @@ export default function PostsPage() {
     { initialData: [] }
   );
 
-  const totalCount = Number(headers['x-total-count'] ?? 0);
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const totalCount = Number(
+    headers['x-total-count'] ?? posts.length
+  );
+
+  const total = Math.max(0, totalCount - removed);
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+
+  const authorName = (id) =>
+    users.find((user) => user.id === id)?.name ?? `User ${id}`;
+
+  // ----- Chọn từng bài hoặc chọn tất cả bài trên trang hiện tại -----
+  const allChecked =
+    posts.length > 0 &&
+    posts.every((post) => selectedIds.includes(post.id));
+
+  function toggleSelect(id) {
+    setSelectedIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((selectedId) => selectedId !== id)
+        : [...prev, id]
+    );
+  }
+
+  function toggleAll() {
+    const currentPageIds = posts.map((post) => post.id);
+
+    setSelectedIds((prev) => {
+      if (allChecked) {
+        return prev.filter((id) => !currentPageIds.includes(id));
+      }
+
+      return [
+        ...prev,
+        ...currentPageIds.filter((id) => !prev.includes(id)),
+      ];
+    });
+  }
+
+  // ----- TODO 10.2: Optimistic update khi xóa một bài -----
+  async function handleDeleteOne() {
+    const post = toDelete;
+
+    if (!post || deletingId !== null) return;
+
+    setToDelete(null);
+    setDeletingId(post.id);
+
+    const backup = posts;
+
+    // Bài viết biến mất ngay khỏi giao diện.
+    setPosts((prev) =>
+      prev.filter((item) => item.id !== post.id)
+    );
+    setSelectedIds((prev) =>
+      prev.filter((id) => id !== post.id)
+    );
+    setRemoved((prev) => prev + 1);
+
+    try {
+      const response = await postApi.remove(post.id);
+
+      notify(
+        'success',
+        `Xóa bài viết #${post.id} thành công (HTTP ${response.status})`
+      );
+    } catch (err) {
+      // API lỗi: khôi phục danh sách và tổng số bài.
+      setPosts(backup);
+      setRemoved((prev) => Math.max(0, prev - 1));
+
+      notify(
+        'danger',
+        `Xóa bài viết #${post.id} thất bại: ${
+          err.userMessage || err.message || 'Lỗi kết nối'
+        }. Đã khôi phục bài viết.`
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  // ----- TODO 10.1: Xóa hàng loạt bằng Promise.allSettled -----
+  async function handleDeleteMany() {
+    const idsToDelete = [...selectedIds];
+
+    if (idsToDelete.length === 0 || bulkDeleting) return;
+
+    setBulkDeleting(true);
+
+    try {
+      const results = await Promise.allSettled(
+        idsToDelete.map((id) => postApi.remove(id))
+      );
+
+      // Giữ nguyên thứ tự giữa idsToDelete và results.
+      const okIds = idsToDelete.filter(
+        (_, index) => results[index].status === 'fulfilled'
+      );
+
+      const failedIds = idsToDelete.filter(
+        (_, index) => results[index].status === 'rejected'
+      );
+
+      // Chỉ xóa khỏi giao diện các bài đã xóa thành công.
+      setPosts((prev) =>
+        prev.filter((post) => !okIds.includes(post.id))
+      );
+
+      setRemoved((prev) => prev + okIds.length);
+
+      // Các bài xóa thất bại vẫn được chọn.
+      setSelectedIds(failedIds);
+
+      if (okIds.length === idsToDelete.length) {
+        notify(
+          'success',
+          `Xóa thành công ${okIds.length}/${idsToDelete.length} bài viết`
+        );
+      } else {
+        notify(
+          'warning',
+          `Xóa thành công ${okIds.length}/${idsToDelete.length} bài viết. Các bài thất bại vẫn được giữ lại để thử lại.`
+        );
+      }
+    } finally {
+      setBulkDeleting(false);
+      setConfirmBulk(false);
+    }
+  }
 
   return (
     <div>
       <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-          <h2 className="mb-1">Danh sách bài viết</h2>
+          <h2 className="mb-1">
+            Danh sách bài viết{' '}
+            <Badge bg="secondary">{total}</Badge>
+          </h2>
           <p className="text-muted mb-0">
-            Tìm kiếm, lọc theo tác giả và điều hướng bằng phân trang.
+            Tìm kiếm, lọc tác giả và quản lý bài viết.
           </p>
         </div>
 
-        <Button as={Link} to="/posts/new" variant="success">
-          + Tạo bài viết
-        </Button>
+        <div className="d-flex flex-wrap gap-2">
+          <Button
+            variant="danger"
+            disabled={selectedIds.length === 0 || bulkDeleting}
+            onClick={() => setConfirmBulk(true)}
+          >
+            Xóa đã chọn ({selectedIds.length})
+          </Button>
+
+          <Button as={Link} to="/posts/new" variant="success">
+            + Tạo bài viết
+          </Button>
+        </div>
       </div>
 
       <Card className="mb-4">
@@ -117,9 +275,6 @@ export default function PostsPage() {
                   </Button>
                 )}
               </InputGroup>
-              <Form.Text className="text-muted">
-                Tìm kiếm sau khi bạn ngừng gõ 500ms.
-              </Form.Text>
             </Col>
 
             <Col md={6}>
@@ -147,17 +302,30 @@ export default function PostsPage() {
 
       {error && (
         <Alert variant="danger">
-          {error}
+          {error}{' '}
           <Button
             variant="outline-danger"
             size="sm"
-            className="ms-3"
             onClick={refetch}
           >
             Thử lại
           </Button>
         </Alert>
       )}
+
+      <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <Form.Check
+          type="checkbox"
+          label="Chọn tất cả bài viết trên trang này"
+          checked={allChecked}
+          disabled={posts.length === 0 || loading}
+          onChange={toggleAll}
+        />
+
+        <span className="text-muted small">
+          Đã chọn {selectedIds.length} bài viết
+        </span>
+      </div>
 
       {loading ? (
         <div className="text-center py-5">
@@ -172,53 +340,85 @@ export default function PostsPage() {
         </Alert>
       ) : !error ? (
         <>
-          <div className="row g-3">
+          <Row className="g-3">
             {posts.map((post) => (
-              <div className="col-12 col-md-6" key={post.id}>
+              <Col xs={12} md={6} key={post.id}>
                 <Card className="h-100 shadow-sm">
                   <Card.Body>
+                    <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
+                      <Form.Check
+                        type="checkbox"
+                        aria-label={`Chọn bài viết ${post.id}`}
+                        checked={selectedIds.includes(post.id)}
+                        onChange={() => toggleSelect(post.id)}
+                      />
+
+                      <span className="text-muted small">
+                        Bài viết #{post.id}
+                      </span>
+                    </div>
+
                     <div className="text-muted small mb-2">
-                      Bài viết #{post.id} · Tác giả #{post.userId}
+                      Tác giả: {authorName(post.userId)}
                     </div>
 
                     <Card.Title>{post.title}</Card.Title>
                     <Card.Text>{post.body}</Card.Text>
 
-                    <Button
-                      as={Link}
-                      to={`/posts/${post.id}`}
-                      variant="outline-success"
-                      size="sm"
-                    >
-                      Xem chi tiết
-                    </Button>
+                    <div className="d-flex flex-wrap gap-2">
+                      <Button
+                        as={Link}
+                        to={`/posts/${post.id}`}
+                        variant="outline-success"
+                        size="sm"
+                      >
+                        Xem chi tiết
+                      </Button>
+
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        disabled={
+                          deletingId !== null || bulkDeleting
+                        }
+                        onClick={() => setToDelete(post)}
+                      >
+                        Xóa
+                      </Button>
+                    </div>
                   </Card.Body>
                 </Card>
-              </div>
+              </Col>
             ))}
-          </div>
+          </Row>
 
           <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4">
             <span className="text-muted">
               Trang {page}
               {totalPages > 0 ? ` / ${totalPages}` : ''}
               {' · '}
-              Tổng {totalCount} bài viết
+              Tổng {total} bài viết
             </span>
 
             <div className="d-flex gap-2">
               <Button
                 variant="outline-success"
                 disabled={page <= 1}
-                onClick={() => changeParams({ page: page - 1 })}
+                onClick={() =>
+                  changeParams({ page: page - 1 })
+                }
               >
                 Trang trước
               </Button>
 
               <Button
                 variant="outline-success"
-                disabled={totalPages === 0 || page >= totalPages}
-                onClick={() => changeParams({ page: page + 1 })}
+                disabled={
+                  totalPages === 0 || page >= totalPages
+                }
+                onClick={() =>
+                  changeParams({ page: page + 1 })
+                }
               >
                 Trang sau
               </Button>
@@ -226,6 +426,41 @@ export default function PostsPage() {
           </div>
         </>
       ) : null}
+
+      <ConfirmModal
+        show={!!toDelete}
+        title="Xóa bài viết"
+        message={
+          <>
+            Bạn có chắc muốn xóa bài viết{' '}
+            <strong>
+              #{toDelete?.id} {toDelete?.title}
+            </strong>
+            ?
+          </>
+        }
+        confirmText="Xóa"
+        loading={deletingId !== null}
+        onConfirm={handleDeleteOne}
+        onCancel={() => setToDelete(null)}
+      />
+
+      <ConfirmModal
+        show={confirmBulk}
+        title="Xóa nhiều bài viết"
+        message={
+          <>
+            Bạn có chắc muốn xóa {selectedIds.length} bài viết đã chọn
+            {' '}(
+            {selectedIds.map((id) => `#${id}`).join(', ')}
+            )?
+          </>
+        }
+        confirmText="Xóa tất cả"
+        loading={bulkDeleting}
+        onConfirm={handleDeleteMany}
+        onCancel={() => setConfirmBulk(false)}
+      />
     </div>
   );
 }
