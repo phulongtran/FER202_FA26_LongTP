@@ -6,6 +6,7 @@ import AxiosDemo from './AxiosDemo.jsx';
 import MainLayout from './layouts/MainLayout.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import PostsPage from './pages/PostsPage.jsx';
+import CreatePostPage from './pages/CreatePostPage.jsx';
 
 import PostListCard from './components/http/PostListCard.jsx';
 import CreatePostCard from './components/http/CreatePostCard.jsx';
@@ -43,6 +44,8 @@ export default function App() {
         <Route path="http" element={<HttpRequestsPage />} />
         <Route path="posts" element={<PostsPage />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="posts/new" element={<CreatePostPage />} />
+<Route path="posts" element={<PostsPage />} />
       </Route>
     </Routes>
   );
