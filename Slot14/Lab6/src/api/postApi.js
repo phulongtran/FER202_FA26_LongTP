@@ -7,6 +7,9 @@ const postApi = {
   getById: (id, signal) =>
     axiosClient.get(`/posts/${id}`, { signal }),
 
+  getComments: (id, signal) =>
+    axiosClient.get(`/posts/${id}/comments`, { signal }),
+
   create: (data) =>
     axiosClient.post('/posts', data),
 
