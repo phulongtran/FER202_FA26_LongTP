@@ -1,48 +1,33 @@
 
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import {
   Card,
   ListGroup,
   Button,
   Toast,
-  ToastContainer
+  ToastContainer,
 } from 'react-bootstrap';
+import useAxios from '../../hooks/useAxios';
+import AsyncContent from '../common/AsyncContent';
 import postApi from '../../api/postApi';
 import ConfirmModal from '../ConfirmModal';
-import LoadingSpinner from '../common/LoadingSpinner';
-import ErrorAlert from '../common/ErrorAlert';
-import EmptyState from '../common/EmptyState';
 
 export default function DeletePostCard() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    data: posts,
+    setData: setPosts,
+    loading,
+    error,
+    refetch,
+  } = useAxios(
+    (signal) => postApi.getAll({ _limit: 5 }, signal),
+    [],
+    { initialData: [] }
+  );
+
   const [toDelete, setToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState(null);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const load = async () => {
-      try {
-        const res = await postApi.getAll(
-          { _limit: 5 },
-          controller.signal
-        );
-        setPosts(res.data);
-      } catch (err) {
-        if (axios.isCancel(err)) return;
-        setError(err.userMessage || err.message);
-      } finally {
-        if (!controller.signal.aborted) setLoading(false);
-      }
-    };
-
-    load();
-    return () => controller.abort();
-  }, []);
 
   const handleDelete = async () => {
     if (!toDelete) return;
@@ -53,19 +38,21 @@ export default function DeletePostCard() {
       const res = await postApi.remove(toDelete.id);
 
       setPosts((prev) =>
-        prev.filter((p) => p.id !== toDelete.id)
+        prev.filter((post) => post.id !== toDelete.id)
       );
 
       setToast({
         bg: 'success',
-        message: `DELETE /posts/${toDelete.id} → ${res.status}`
+        message: `DELETE /posts/${toDelete.id} → ${res.status}`,
       });
 
       setToDelete(null);
     } catch (err) {
       setToast({
         bg: 'danger',
-        message: `Xóa thất bại: ${err.userMessage || err.message}`
+        message: `Xóa thất bại: ${
+          err.userMessage || err.message
+        }`,
       });
     } finally {
       setDeleting(false);
@@ -79,33 +66,36 @@ export default function DeletePostCard() {
       </Card.Header>
 
       <Card.Body>
-        {loading && <LoadingSpinner />}
-        {!loading && error && <ErrorAlert message={error} />}
-
-        {!loading && !error && posts.length === 0 && (
-          <EmptyState text="Đã xóa hết bài viết" />
-        )}
-
-        {!loading && !error && (
-          <ListGroup variant="flush">
-            {posts.map((p) => (
-              <ListGroup.Item
-                key={p.id}
-                className="d-flex justify-content-between align-items-center gap-2"
-              >
-                <span>#{p.id} – {p.title}</span>
-
-                <Button
-                  size="sm"
-                  variant="outline-danger"
-                  onClick={() => setToDelete(p)}
+        <AsyncContent
+          loading={loading}
+          error={error}
+          data={posts}
+          onRetry={refetch}
+          emptyText="Đã xóa hết bài viết"
+        >
+          {(items) => (
+            <ListGroup variant="flush">
+              {items.map((post) => (
+                <ListGroup.Item
+                  key={post.id}
+                  className="d-flex justify-content-between align-items-center gap-2"
                 >
-                  Xóa
-                </Button>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        )}
+                  <span>
+                    #{post.id} – {post.title}
+                  </span>
+
+                  <Button
+                    size="sm"
+                    variant="outline-danger"
+                    onClick={() => setToDelete(post)}
+                  >
+                    Xóa
+                  </Button>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
+        </AsyncContent>
       </Card.Body>
 
       <ConfirmModal
