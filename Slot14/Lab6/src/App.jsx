@@ -8,6 +8,7 @@ import NotFoundPage from './pages/NotFoundPage.jsx';
 import PostsPage from './pages/PostsPage.jsx';
 import CreatePostPage from './pages/CreatePostPage.jsx';
 import PostDetailPage from './pages/PostDetailPage.jsx';
+import EditPostPage from './pages/EditPostPage.jsx';
 
 import PostListCard from './components/http/PostListCard.jsx';
 import CreatePostCard from './components/http/CreatePostCard.jsx';
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="posts/new" element={<CreatePostPage />} />
         <Route path="posts" element={<PostsPage />} />
         <Route path="posts/:id" element={<PostDetailPage />} />
+        <Route path="posts/:id/edit" element={<EditPostPage />} />
       </Route>
     </Routes>
   );
