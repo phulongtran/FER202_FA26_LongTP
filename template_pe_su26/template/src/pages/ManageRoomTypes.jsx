@@ -21,14 +21,41 @@ export default function ManageRoomTypes() {
       .then((data) => { setRoomTypes(data); setLoading(false) })
       .catch((err) => { setError(err.message); setLoading(false) })
   }, [])
-
-  const handleAdd = async (e) => {
-    e.preventDefault()
-    const form = e.currentTarget
-    formDispatch({ type: 'SET_VALIDATED', payload: true })
-    if (!form.checkValidity()) return
     // TODO-10A: validate tên, gọi addRoomType API, cập nhật danh sách, reset form
+const handleAdd = async (e) => {
+  e.preventDefault()
+
+  const form = e.currentTarget
+
+  formDispatch({ type: 'SET_VALIDATED', payload: true })
+
+  if (!form.checkValidity()) return
+
+  const nameError = validateRoomTypeName(
+    formState.newName,
+    roomTypes
+  )
+
+  if (nameError) {
+    formDispatch({
+      type: 'SET_UNIQUE_ERROR',
+      payload: nameError === 'Room type name already exists.'
+    })
+    return
   }
+
+  try {
+    const newRoomType = await addRoomType({
+      name: formState.newName.trim()
+    })
+
+    setRoomTypes((prev) => [...prev, newRoomType])
+
+    formDispatch({ type: 'RESET' })
+  } catch (err) {
+    setError(err.message)
+  }
+}
 
   const handleDeleteClick = async (id, name) => {
     setTargetId(id)
