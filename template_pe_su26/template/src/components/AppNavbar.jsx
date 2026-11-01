@@ -30,7 +30,17 @@ export default function AppNavbar() {
           </Nav>
           {isAuthenticated && user && (
             <Nav className="align-items-center gap-2">
-              {/* TODO-02: Hiển thị user.email (bold white) và user.role trong Badge */}
+              
+<span className="text-white fw-bold">
+  {user.email}
+</span>
+
+<Badge bg="info">
+  {user.role}
+</Badge>
+
+              
+
               {/* TODO-03: Nút Logout gọi handleLogout */
               <Button
   variant="outline-light"
