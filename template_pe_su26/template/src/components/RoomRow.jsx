@@ -24,7 +24,12 @@ export default function RoomRow({ room, index, onDelete }) {
         <td>{room.view}</td>
         <td>{room.lastRenovated}</td>
         {/* TODO-07: Thay thế bằng formatPriceRange(room.priceWeekday, room.priceWeekend) */}
-        <td>—</td>
+        <td>
+  {formatPriceRange(
+    room.priceWeekday,
+    room.priceWeekend
+  )}
+</td>
         <td className="d-flex gap-2">
           <Button size="sm" variant="info" onClick={() => navigate(`/rooms/${room.id}`)}>View</Button>
           {/* TODO-06: onClick mở modal xác nhận xoá */}
