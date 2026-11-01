@@ -19,7 +19,11 @@ export default function AddRoom() {
 
   // TODO-04: Gọi fetchRoomTypes() trong useEffect và cập nhật state roomTypes
   useEffect(() => {
-    // TODO-04: implement fetchRoomTypes và setRoomTypes
+   useEffect(() => {
+  fetchRoomTypes()
+    .then((data) => setRoomTypes(data))
+    .catch((err) => console.error(err))
+}, [])
   }, [])
 
   const handleChange = (e) => {
