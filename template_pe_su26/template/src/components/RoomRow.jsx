@@ -10,6 +10,8 @@ export default function RoomRow({ room, index, onDelete }) {
 
   const handleDeleteConfirm = () => {
     // TODO-06: Gọi onDelete(room.id) và đóng modal
+      onDelete(room.id)
+  setShowModal(false)
   }
 
   return (
@@ -26,10 +28,23 @@ export default function RoomRow({ room, index, onDelete }) {
         <td className="d-flex gap-2">
           <Button size="sm" variant="info" onClick={() => navigate(`/rooms/${room.id}`)}>View</Button>
           {/* TODO-06: onClick mở modal xác nhận xoá */}
-          <Button size="sm" variant="danger" onClick={() => {}}>Delete</Button>
+        <Button
+  size="sm"
+  variant="danger"
+  onClick={() => setShowModal(true)}
+>
+  Delete
+</Button>
         </td>
       </tr>
       {/* TODO-06: Thêm ModalConfirm với show={showModal}, body chứa room.name */}
+      <ModalConfirm
+  show={showModal}
+  title="Confirm Delete"
+  body={`Are you sure you want to delete room "${room.name}"?`}
+  onConfirm={handleDeleteConfirm}
+  onCancel={() => setShowModal(false)}
+/>
     </>
   )
 }
