@@ -57,18 +57,55 @@ const handleAdd = async (e) => {
   }
 }
 
-  const handleDeleteClick = async (id, name) => {
-    setTargetId(id)
-    setTargetName(name)
+ 
     // TODO-10B: Gọi fetchRooms(), kiểm tra có phòng nào dùng roomTypeId này không
     // Nếu có → setDeleteError với thông báo chứa tên roomType
     // Nếu không → setDeleteError(null)
-    setShowModal(true)
+   const handleDeleteClick = async (id, name) => {
+  setTargetId(id)
+  setTargetName(name)
+
+  try {
+    const rooms = await fetchRooms()
+
+    const inUse = (rooms || []).some(
+      (r) => String(r.roomTypeId) === String(id)
+    )
+
+    if (inUse) {
+      setDeleteError(
+        `Room type "${name}" is currently in use and cannot be deleted.`
+      )
+    } else {
+      setDeleteError(null)
+    }
+  } catch (err) {
+    setDeleteError(
+      err.message || 'Failed to check room type usage.'
+    )
   }
 
-  const handleDeleteConfirm = async () => {
+  setShowModal(true)
+}
+
+
     // TODO-10B: gọi deleteRoomType API, cập nhật danh sách, đóng modal
+    const handleDeleteConfirm = async () => {
+  try {
+    await deleteRoomType(targetId)
+
+    setRoomTypes((prev) =>
+      prev.filter((rt) => rt.id !== targetId)
+    )
+
+    setShowModal(false)
+  } catch (err) {
+    setDeleteError(
+      err.message || 'Failed to delete room type.'
+    )
   }
+}
+
 
   const handleUpdate = (updated) => {
     setRoomTypes((prev) => prev.map((rt) => (rt.id === updated.id ? updated : rt)))
