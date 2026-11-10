@@ -6,11 +6,17 @@ import productsReducer from '../features/products/productsSlice';
 import cartReducer from '../features/cart/cartSlice';
 import studentsReducer from '../features/students/studentsSlice';
 
+// Bài 2: Todo List
+import todosReducer from '../redux/todos/reducers';
+
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     products: productsReducer,
     cart: cartReducer,
     students: studentsReducer,
+
+    // Bài 2
+    todos: todosReducer,
   },
 });
