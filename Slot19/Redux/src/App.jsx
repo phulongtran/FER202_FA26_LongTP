@@ -1,43 +1,42 @@
 
-import { Container, Row, Col, Navbar } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container } from 'react-bootstrap';
 
-import Counter from './components/Counter';
-import ProductList from './components/ProductList';
-import Cart from './components/Cart';
-import CartBadge from './components/CartBadge';
+import Toolbar from './components/Toolbar';
+import StudentTable from './components/StudentTable';
+import StudentFormModal from './components/StudentFormModal';
 
-function App() {
+export default function App() {
+  const [show, setShow] = useState(false);
+  const [editing, setEditing] = useState(null);
+
+  // Mở form thêm sinh viên
+  const openAdd = () => {
+    setEditing(null);
+    setShow(true);
+  };
+
+  // Mở form chỉnh sửa sinh viên
+  const openEdit = (student) => {
+    setEditing(student);
+    setShow(true);
+  };
+
   return (
-    <>
-      <Navbar bg="dark" variant="dark" className="mb-4">
-        <Container>
-          <Navbar.Brand>Redux Practice</Navbar.Brand>
-          <CartBadge />
-        </Container>
-      </Navbar>
+    <Container className="py-4">
+      <h2 className="mb-4">
+        🎓 Quản lý Sinh viên — Redux Toolkit
+      </h2>
 
-      <Container className="pb-5">
-        {/* Bài 1 */}
-        <h2 className="mb-3">Bài 1: Redux Counter</h2>
-        <Counter />
+      <Toolbar onAdd={openAdd} />
 
-        <hr className="my-5" />
+      <StudentTable onEdit={openEdit} />
 
-        {/* Bài 4 */}
-        <h2 className="mb-4">
-          Bài 4: Shopping Cart - Redux Toolkit
-        </h2>
-
-        <Row>
-          <Col lg={12}>
-            <ProductList />
-          </Col>
-        </Row>
-
-        <Cart />
-      </Container>
-    </>
+      <StudentFormModal
+        show={show}
+        onHide={() => setShow(false)}
+        editing={editing}
+      />
+    </Container>
   );
 }
-
-export default App;
