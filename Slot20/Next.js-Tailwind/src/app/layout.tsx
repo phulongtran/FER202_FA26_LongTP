@@ -2,6 +2,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import StoreProvider from './StoreProvider';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ThemeSync from './components/ThemeSync';
 
 export const metadata: Metadata = {
   title: {
@@ -18,9 +21,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className="min-h-screen bg-gray-50 text-gray-900 antialiased">
+      <body className="flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
         <StoreProvider>
-          {children}
+          <ThemeSync />
+          <Navbar />
+
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+            {children}
+          </main>
+
+          <Footer />
         </StoreProvider>
       </body>
     </html>

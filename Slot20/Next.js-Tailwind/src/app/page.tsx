@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="py-20 text-center">
+    <div className="py-20 text-center">
       <h1 className="text-4xl font-extrabold">
         Slot 20
       </h1>
@@ -14,6 +14,6 @@ export default function Home() {
       >
         Đến Counter →
       </Link>
-    </main>
+    </div>
   );
 }
