@@ -3,6 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import CartBadge from './CartBadge';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import {
   menuClosed,
@@ -61,7 +62,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
-          {/* Bài 4 sẽ chèn CartBadge ở đây */}
+          <CartBadge />
           <button
             onClick={() => dispatch(themeToggled())}
             className="rounded-lg p-2 text-lg transition hover:bg-gray-100 dark:hover:bg-gray-800"
