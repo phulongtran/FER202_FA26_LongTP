@@ -1,9 +1,11 @@
 
 import type { RootState } from './store';
 import type { Theme } from './features/ui/uiSlice';
+import type { TodosState } from './features/todos/todosSlice';
 
 export type PersistedState = {
   theme?: Theme;
+  todos?: TodosState;
 };
 
 const KEY = 'slot20-state';
@@ -11,6 +13,7 @@ const KEY = 'slot20-state';
 export function selectPersisted(state: RootState): PersistedState {
   return {
     theme: state.ui.theme,
+    todos: state.todos,
   };
 }
 
@@ -27,6 +30,6 @@ export function saveState(state: PersistedState): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
-    // Bỏ qua lỗi localStorage
+    /* bỏ qua lỗi hết dung lượng */
   }
 }
