@@ -1,6 +1,6 @@
 
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from '@/lib/store';
+import type { RootState } from '../../store';
 
 type CounterState = {
   value: number;
