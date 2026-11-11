@@ -29,3 +29,13 @@ export type ProductsResponse = {
 
 export type CartProduct = Pick<Product, 'id' | 'title' | 'price' | 'thumbnail'>;
 export type CartItem = CartProduct & { quantity: number };
+
+export type Note = {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+};
+
+export type NoteInput = Pick<Note, 'title' | 'content'>;
+export type NoteUpdate = Partial<NoteInput>;

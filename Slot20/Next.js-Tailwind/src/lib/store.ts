@@ -4,6 +4,7 @@ import uiReducer from './features/ui/uiSlice';
 import todosReducer from './features/todos/todosSlice';
 import productsReducer from './features/products/productsSlice';
 import cartReducer from './features/cart/cartSlice';
+import { notesApi } from './features/notes/notesApi';
 
 export const makeStore = () =>
   configureStore({
@@ -13,7 +14,9 @@ export const makeStore = () =>
       todos: todosReducer,
       products: productsReducer,
       cart: cartReducer,
+      [notesApi.reducerPath]: notesApi.reducer, // cache của RTK Query
     },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(notesApi.middleware),
   });
 
 export type AppStore = ReturnType<typeof makeStore>;
